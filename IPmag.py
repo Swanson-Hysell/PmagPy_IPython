@@ -73,7 +73,7 @@ def iBootstrap(Data1,Data2,NumSims=1000):
 
 
     
-def iWatsonV(Data1,Data2,NumSims=1000):
+def iWatsonV(Data1,Data2,NumSims=5000):
     """
     Conduct a Watson V test for a common mean on two declination, inclination data sets
     
@@ -87,7 +87,7 @@ def iWatsonV(Data1,Data2,NumSims=1000):
 
     Data1 : a list of directional data [dec,inc]
     Data2 : a list of directional data [dec,inc]
-    NumSims : number of Monte Carlo simulations (default is 1000)
+    NumSims : number of Monte Carlo simulations (default is 5000)
     """   
     pars_1=pmag.fisher_mean(Data1)
     pars_2=pmag.fisher_mean(Data2)
