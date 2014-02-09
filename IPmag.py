@@ -3,6 +3,16 @@ import pylab
 import numpy
 import matplotlib.pyplot as plt
 
+def iflip(D): #function simplified from PmagPy pmag.flip function
+    """
+    This function returns the antipode (flips) of the unit vectors in D (dec,inc,length).
+    """
+    Dflip=[]
+    for rec in D:
+        d,i=(rec[0]-180.)%360.,-rec[1]
+        Dflip.append([d,i,1.])
+    return Dflip
+
 def iplotDI(DIblock,color='k'):
     """
     Plot declination, inclination data on a equal area plot
