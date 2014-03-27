@@ -287,7 +287,7 @@ def equi(m, centerlon, centerlat, radius, color):
     X,Y = m(X,Y)
     plt.plot(X,Y,color)
 
-def poleplot(mapname,plong,plat,A95,label,color='k',marker='o'):
+def poleplot(mapname,plong,plat,A95,label='',color='k',marker='o'):
     """
     This function plots a paleomagnetic pole on whatever current map projection has been set using the basemap plotting library.
 
@@ -303,10 +303,10 @@ def poleplot(mapname,plong,plat,A95,label,color='k',marker='o'):
     """
     centerlon, centerlat = mapname(plong,plat)
     A95_km=A95*111.32
-    mapname.scatter(centerlon,centerlat,20,marker=marker,color=color,label=label)
+    mapname.scatter(centerlon,centerlat,20,marker=marker,color=color,label=label,zorder=101)
     equi(mapname, plong, plat, A95_km,color)
 
-def vgpplot(mapname,plong,plat,color='k',marker='o'):
+def vgpplot(mapname,plong,plat,label='',color='k',marker='o'):
     """
     This function plots a paleomagnetic pole on whatever current map projection has been set using the basemap plotting library.
 
@@ -319,4 +319,4 @@ def vgpplot(mapname,plong,plat,color='k',marker='o'):
     marker : the marker shape desired for the pole mean symbol (default is 'o' aka a circle)
     """
     centerlon, centerlat = mapname(plong,plat)
-    mapname.scatter(centerlon,centerlat,20,marker=marker,color=color)
+    mapname.scatter(centerlon,centerlat,20,marker=marker,color=color,label=label,zorder=100)
