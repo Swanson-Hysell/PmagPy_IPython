@@ -3,13 +3,13 @@ from numpy import random
 import numpy.linalg
 import exceptions
 import os
-import check_updates
+#import check_updates
 import scipy
 from scipy import array,sqrt,mean
 
-def get_version():
-    version=check_updates.get_version()
-    return version
+#def get_version():
+#    version=check_updates.get_version()
+#    return version
 def sort_diclist(undecorated,sort_on):
     decorated=[(dict_[sort_on],dict_) for dict_ in undecorated]
     decorated.sort()
