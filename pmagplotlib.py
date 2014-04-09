@@ -8,7 +8,8 @@ import pmag,pylab,exceptions,sys
 globals = 0
 graphmenu = 0
 global version_num
-version_num=pmag.get_version()
+version_num='pmagpy-2.220'
+#manually enter version number to avoid error
 #matplotlib.ticker_Formatter.xaxis.set_powerlimits((-3,4))
 #matplotlib.ticker_Formatter.yaxis.set_powerlimits((-3,4))
 def poly(X,Y,deg):
