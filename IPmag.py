@@ -320,3 +320,40 @@ def vgpplot(mapname,plong,plat,label='',color='k',marker='o'):
     """
     centerlon, centerlat = mapname(plong,plat)
     mapname.scatter(centerlon,centerlat,20,marker=marker,color=color,label=label,zorder=100)
+
+def VGP_calc(dataframe):
+    """
+    This function calculates paleomagnetic poles from directional data within a pandas.DataFrame
+
+    Parameters
+    ----------- 
+    dataframe : the name of the pandas.DataFrame containing the data
+    dataframe['site_lat'] : the latitude of the site
+    dataframe['site_long'] : the longitude of the site
+    dataframe['inc_tc'] : the tilt-corrected inclination 
+    dataframe['dec_tc'] : the tilt-corrected declination
+    """
+    #calculate the paleolatitude/colatitude
+    dataframe['paleolatitude']=np.degrees(np.arctan(0.5*np.tan(np.radians(dataframe['inc_tc']))))
+    dataframe['colatitude']=90-dataframe['paleolatitude']
+    #calculate the latitude of the pole
+    dataframe['pole_lat']=np.degrees(np.arcsin(np.sin(np.radians(dataframe['site_lat']))*
+                                                         np.cos(np.radians(dataframe['colatitude']))+
+                                                         np.cos(np.radians(dataframe['site_lat']))*
+                                                         np.sin(np.radians(dataframe['colatitude']))*
+                                                         np.cos(np.radians(dataframe['dec_tc']))))
+    #calculate the longitudinal difference between the pole and the site (beta)
+    dataframe['beta']=np.degrees(np.arcsin((np.sin(np.radians(dataframe['colatitude']))*
+                                      np.sin(np.radians(dataframe['dec_tc'])))/
+                                     (np.cos(np.radians(dataframe['pole_lat'])))))
+    #generate a boolean array (mask) to use to distinguish between the two possibilities for pole longitude
+    #and then calculate pole longitude using the site location and calculated beta
+    mask = np.cos(np.radians(dataframe['colatitude']))>np.sin(np.radians(dataframe['site_lat']))*np.sin(np.radians(dataframe['pole_lat']))
+    dataframe['pole_long']=np.where(mask,(dataframe['site_long']+dataframe['beta'])%360.,(dataframe['site_long']+180-dataframe['beta'])%360.)
+    #calculate the antipode of the poles
+    dataframe['pole_lat_rev']=-dataframe['pole_lat']
+    dataframe['pole_long_rev']=(dataframe['pole_long']-180.)%360. 
+    #the 'colatitude' and 'beta' columns were created for the purposes of the pole calculations
+    #but aren't of further use and are deleted
+    del dataframe['colatitude']
+    del dataframe['beta']
