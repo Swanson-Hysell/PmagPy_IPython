@@ -8,8 +8,7 @@ import pmag,pylab,exceptions,sys
 globals = 0
 graphmenu = 0
 global version_num
-version_num='pmagpy-2.206'
-#manually enter version number to avoid error
+version_num=pmag.get_version()
 #matplotlib.ticker_Formatter.xaxis.set_powerlimits((-3,4))
 #matplotlib.ticker_Formatter.yaxis.set_powerlimits((-3,4))
 def poly(X,Y,deg):
@@ -172,6 +171,14 @@ def plotLINES(fignum,line,sym,x,y):
 
 def plotXY(fignum,X,Y,**kwargs):
     pylab.figure(num=fignum)
+#    if 'poly' in kwargs.keys():
+#          coeffs=numpy.polyfit(X,Y,kwargs['poly']) 
+#          polynomial=numpy.poly1d(coeffs)
+#          xs=numpy.arange(numpy.min(X),numpy.max(X))
+#          ys=polynomial(xs) 
+#          pylab.plot(xs,ys)
+#          print coefs
+#          print polynomial
     if 'sym' in kwargs.keys():
         sym=kwargs['sym']
     else: sym='ro'
@@ -522,7 +529,7 @@ def plotZ(fignum,datablock,angle,s,norm):
             if delta=="":delta=.02*x[-1]
             if recnum%2==0 and len(x)>0: pylab.text(x[-1]-delta,z[-1]+delta,(' '+str(recnum)),fontsize=9)
             recnum+=1
-        elif len(plotrec)==6 and plotrec[5]=='b':
+        elif len(plotrec)>=6 and plotrec[5]=='b':
           #  zb.append(-rec[2])
             zb.append(rec[2])
             xb.append(rec[0])
@@ -1423,6 +1430,7 @@ def plotCDF(fignum,data,xlab,sym,title,**kwargs):
   
     pylab.xlabel(xlab)
     pylab.ylabel('Cumulative Distribution')
+    pylab.axis([0,numpy.max(X)*1.1,0,1.1])
     pylab.title(title)
     return X,Y
 #

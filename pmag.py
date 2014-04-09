@@ -3,13 +3,13 @@ from numpy import random
 import numpy.linalg
 import exceptions
 import os
-#import check_updates
+import check_updates
 import scipy
 from scipy import array,sqrt,mean
 
-#def get_version():
-#    version=check_updates.get_version()
-#    return version
+def get_version():
+    version=check_updates.get_version()
+    return version
 def sort_diclist(undecorated,sort_on):
     decorated=[(dict_[sort_on],dict_) for dict_ in undecorated]
     decorated.sort()
@@ -62,6 +62,7 @@ def get_orient(samp_data,er_sample_name):
     EX=["SO-ASC","SO-POM"]
     orient={'er_sample_name':er_sample_name,'sample_azimuth':"",'sample_dip':"",'sample_description':""}
     orients=get_dictitem(samp_data,'er_sample_name',er_sample_name,'T') # get all the orientation data for this sample
+    if 'sample_orientation_flag' in orients[0].keys(): orients=get_dictitem(orients,'sample_orientation_flag','b','F') # exclude all samples with bad orientation flag
     if len(orients)>0:orient=orients[0] # re-initialize to first one
     methods=get_dictitem(orients,'magic_method_codes','SO-','has')
     methods=get_dictkey(methods,'magic_method_codes','') # get a list of all orientation methods for this sample
@@ -880,6 +881,8 @@ def magic_read(infile):
     for key in line:
         magic_keys.append(key)
     lines=f.readlines()
+    if len(lines)<1:
+       return [],'empty_file' 
     for line in lines[:-1]:
         line.replace('\n','')
         if delim=='space':rec=line[:-1].split()
@@ -896,7 +899,13 @@ def magic_read(infile):
             print "Warning: Uneven record lengths detected: "
             print magic_keys
             print rec
-        for k in range(len(rec)):
+        # modified by Ron Shaar:
+        # add a health check:
+        # if len(magic_keys) > len(rec): take rec
+        # if len(magic_keys) < len(rec): take magic_keys
+        # original code: for k in range(len(rec)):
+        # channged to: for k in range(min(len(magic_keys),len(rec))):
+        for k in range(min(len(magic_keys),len(rec))):
            magic_record[magic_keys[k]]=rec[k].strip('\n')
         magic_data.append(magic_record)
     magictype=file_type.lower().split("_")
@@ -984,6 +993,9 @@ def magic_write(ofile,Recs,file_type):
     """
     writes out a magic format list of dictionaries to ofile
     """
+    
+    if len(Recs)<1:
+        return
     pmag_out=open(ofile,'w')
     outstring="tab \t"+file_type+"\n"
     pmag_out.write(outstring)
@@ -1332,6 +1344,7 @@ def domean(indata,start,end,calculation_type):
     mpars={}
     datablock=[]
     ind=0
+    start0,end0=start,end
     for rec in indata:
         if len(rec)<6:rec.append('g')
         if rec[5]=='b' and ind==start: 
@@ -1340,10 +1353,15 @@ def domean(indata,start,end,calculation_type):
             return mpars 
         if rec[5]=='b' and ind<start: 
             start-=1
+            end-=1
+        if rec[5]=='b' and ind>start and ind<end: 
+            end-=1
+        if rec[5]=='b' and ind>start and ind==end: 
+            end-=1
         if rec[5]=='g':
             datablock.append(rec) # use only good data
-        else:
-            end-=1
+ #       else:
+ #           end-=1
         ind+=1
     mpars["calculation_type"]=calculation_type
     rad=numpy.pi/180.
@@ -1363,8 +1381,8 @@ def domean(indata,start,end,calculation_type):
         cart= dir2cart(data)
         X.append(cart)
     if calculation_type=='DE-BFL-O': # include origin as point
-#        X.append([0.,0.,0.])
-        pass
+        X.append([0.,0.,0.])
+        #pass
     if calculation_type=='DE-FM': # for fisher means
         fpars=fisher_mean(fdata)    
         mpars["specimen_direction_type"]='l'
@@ -1373,8 +1391,8 @@ def domean(indata,start,end,calculation_type):
         mpars["specimen_alpha95"]=fpars["alpha95"]
         mpars["specimen_n"]=fpars["n"]
         mpars["specimen_r"]=fpars["r"]
-        mpars["measurement_step_min"]=datablock[start][0]
-        mpars["measurement_step_max"]=datablock[end][0]
+        mpars["measurement_step_min"]=indata[start0][0]
+        mpars["measurement_step_max"]=indata[end0][0]
         mpars["center_of_mass"]=cm
         mpars["specimen_dang"]=-1
         return mpars
@@ -1416,8 +1434,8 @@ def domean(indata,start,end,calculation_type):
         mpars["specimen_dec"]=Dir[0]
         mpars["specimen_inc"]=Dir[1]
         mpars["specimen_n"]=len(fdata)
-        mpars["measurement_step_min"]=datablock[start][0]
-        mpars["measurement_step_max"]=datablock[end][0]
+        mpars["measurement_step_min"]=indata[start0][0]
+        mpars["measurement_step_max"]=indata[end0][0]
         mpars["center_of_mass"]=cm
         s1=numpy.sqrt(t[0])
         MAD=numpy.arctan(numpy.sqrt(t[1]+t[2])/s1)/rad
@@ -1436,6 +1454,11 @@ def domean(indata,start,end,calculation_type):
 ##
         for k in range(3):
             control.append(P1[k]-P2[k])
+        # changed by rshaar
+        # control is taken as the center of mass
+        #control=cm
+
+        
         dot = 0
         for k in range(3):
             dot += v1[k]*control[k]
@@ -1461,10 +1484,11 @@ def domean(indata,start,end,calculation_type):
     mpars["specimen_dec"]=Dir[0]
     mpars["specimen_inc"]=Dir[1]
     mpars["specimen_mad"]=MAD
-    mpars["specimen_n"]=int(Nrec)
+    #mpars["specimen_n"]=int(Nrec)
+    mpars["specimen_n"]=len(X)
     mpars["specimen_dang"]=dang[0]
-    mpars["measurement_step_min"]=datablock[start][0]
-    mpars["measurement_step_max"]=datablock[end][0]
+    mpars["measurement_step_min"]=indata[start0][0]
+    mpars["measurement_step_max"]=indata[end0][0]
     return mpars
 
 def circ(dec,dip,alpha):
@@ -2579,6 +2603,7 @@ def fisher_mean(data):
     """
     calculates fisher parameters for data
     """
+
     R,Xbar,X,fpars=0,[0,0,0],[],{}
     N=len(data)
     if N <2:
@@ -2681,7 +2706,75 @@ def lnpbykey(data,key0,key1): # calculate a fisher mean of key1 data for a group
         PmagRec[key0+"_direction_type"]="l"
     return PmagRec
 
-
+def fisher_by_pol(data):
+    """
+    input:    as in dolnp (list of dictionaries with 'dec' and 'inc')
+    description: do fisher mean after splitting data into two polaroties domains.
+    output: three dictionaries:
+        'A'= polarity 'A'
+        'B = polarity 'B'
+        'ALL'= switching polarity of 'B' directions, and calculate fisher mean of all data     
+    code modified from eqarea_ell.py b rshaar 1/23/2014
+    """
+    FisherByPoles={}
+    DIblock,nameblock,locblock=[],[],[]
+    for rec in data:
+        if 'dec' in rec.keys() and 'inc' in rec.keys():
+            DIblock.append([float(rec["dec"]),float(rec["inc"])]) # collect data for fisher calculation
+        else:
+            continue
+        if 'name' in rec.keys():
+            nameblock.append(rec['name'])
+        else:
+            nameblock.append("")    
+        if 'loc' in rec.keys():
+            locblock.append(rec['loc'])
+        else:
+            locblock.append("")
+            
+    ppars=doprinc(array(DIblock)) # get principal directions  
+    reference_DI=[ppars['dec'],ppars['inc']] # choose the northerly declination principe component ("normal") 
+    if reference_DI[0]>90 and reference_DI[0]<270: # make reference direction in northern hemisphere
+        reference_DI[0]=(reference_DI[0]+180.)%360
+        reference_DI[1]=reference_DI[1]*-1.
+    nDIs,rDIs,all_DI,npars,rpars=[],[],[],[],[]
+    nlist,rlist,alllist="","",""
+    nloclist,rloclist,allloclist="","",""
+    for k in range(len(DIblock)):            
+        if angle([DIblock[k][0],DIblock[k][1]],reference_DI) > 90.:
+            rDIs.append(DIblock[k])
+            rlist=rlist+":"+nameblock[k]
+            if locblock[k] not in rloclist:rloclist=rloclist+":"+locblock[k]
+            all_DI.append( [(DIblock[k][0]+180.)%360.,-1.*DIblock[k][1]])
+            alllist=alllist+":"+nameblock[k]
+            if locblock[k] not in allloclist:allloclist=allloclist+":"+locblock[k]
+        else:
+            nDIs.append(DIblock[k])
+            nlist=nlist+":"+nameblock[k]
+            if locblock[k] not in nloclist:nloclist=nloclist+":"+locblock[k]
+            all_DI.append(DIblock[k])
+            alllist=alllist+":"+nameblock[k]
+            if locblock[k] not in allloclist:allloclist=allloclist+":"+locblock[k]
+            
+    for mode in ['A','B','All']:
+        if mode=='A' and len(nDIs)>2:
+            fpars=fisher_mean(nDIs)
+            fpars['sites']=nlist.strip(':')
+            fpars['locs']=nloclist.strip(':')
+            FisherByPoles[mode]=fpars
+        elif mode=='B' and len(rDIs)>2:              
+            fpars=fisher_mean(rDIs)
+            fpars['sites']=rlist.strip(':')
+            fpars['locs']=rloclist.strip(':')
+            FisherByPoles[mode]=fpars
+        elif mode=='All' and len(all_DI)>2:           
+            fpars=fisher_mean(all_DI)
+            fpars['sites']=alllist.strip(':')
+            fpars['locs']=allloclist.strip(':')
+            FisherByPoles[mode]=fpars
+    return FisherByPoles       
+    
+     
 def dolnp(data,direction_type_key):
     """
     returns fisher mean, a95 for data  using method of mcfadden and mcelhinny '88 for lines and planes
@@ -3605,10 +3698,10 @@ def get_unf(N):
 # subroutine to retrieve N uniformly distributed directions
 # using Fisher et al. (1987) way.
 #
-# get uniform direcctions (x,y,z)
+# get uniform directions  [dec,inc]
     z=random.uniform(-1.,1.,size=N)
-    t=random.uniform(0.,360.,size=N)
-    i=numpy.arcsin(z)*180./numpy.pi
+    t=random.uniform(0.,360.,size=N) # decs
+    i=numpy.arcsin(z)*180./numpy.pi # incs
     return numpy.array([t,i]).transpose()
 
 #def get_unf(N): #Jeff's way
@@ -4899,7 +4992,7 @@ def doigrf(long,lat,alt,date,**kwargs):
         if 'mod3k' in kwargs.keys() and kwargs['mod3k']=='arch3k':
             import arch3k as cals3k # use ARCH3k coefficients
         else:
-            import cals3k # goes back to 2000 BC now
+            import cals3k_4b as cals3k # goes back to 2000 BC now
         date0=date-date%10
         field1=numpy.array(cals3k.coeffs(date0))
         field2=numpy.array(cals3k.coeffs(date0+10.))
@@ -5206,7 +5299,7 @@ def measurements_methods(meas_data,noave):
 #
     SpecTmps,SpecOuts=[],[]
     for spec in sids:
-        TRM,IRM3D,ATRM=0,0,0
+        TRM,IRM3D,ATRM,CR=0,0,0,0
         expcodes=""
 # first collect all data for this specimen and do lab treatments
         SpecRecs=get_dictitem(meas_data,'er_specimen_name',spec,'T') # list  of measurement records for this specimen
@@ -5218,6 +5311,8 @@ def measurements_methods(meas_data,noave):
                 IRM3D=1 # catch these suckers here!
             elif "LP-AN-TRM" in tmpmeths: 
                 ATRM=1 # catch these suckers here!
+            elif "LP-CR-TRM" in tmpmeths: 
+                CR=1 # catch these suckers here!
 #
 # otherwise write over existing method codes
 #
@@ -5288,6 +5383,7 @@ def measurements_methods(meas_data,noave):
         experiment_name,measnum="",1
         if IRM3D==1:experiment_name="LP-IRM-3D"
         if ATRM==1: experiment_name="LP-AN-TRM"
+        if CR==1: experiment_name="LP-CR"
         NewSpecs=get_dictitem(SpecTmps,'er_specimen_name',spec,'T')
 #
 # first look for replicate measurements
@@ -5736,7 +5832,7 @@ def parse_site(sample,convention,Z):
 # Site-Sample format eg:  BG94-1  (used by PGL lab in Beijing)
 #
     if convention=="2":
-        parts=sample.split('-')
+        parts=sample.strip('-').split('-')
         return parts[0]
 #
 # Sample is XXXX.YY where XXX is site and YY is sample 
@@ -7814,3 +7910,585 @@ def get_TS(ts):
     print "Time Scale Option Not Available"
     sys.exit()
 
+def initialize_acceptance_criteria ():
+    '''
+    initialize acceptance criteria with NULL values for thellier_gui and demag_gui
+    
+    acceptancec criteria format is doctionaries: 
+    
+    acceptance_criteria={} 
+        acceptance_criteria[crit]={}
+            acceptance_criteria[crit]['category']=
+            acceptance_criteria[crit]['criterion_name']=
+            acceptance_criteria[crit]['value']=
+            acceptance_criteria[crit]['threshold_type']
+            acceptance_criteria[crit]['decimal_points']
+    
+   'category':  
+       'DE-SPEC','DE-SAMP'..etc          
+   'criterion_name':
+       MagIC name   
+   'value': 
+        a number (for 'regular criteria')
+        a string (for 'flag') 
+        1 for True (if criteria is bullean)
+        0 for False (if criteria is bullean)
+        -999 means N/A
+   'threshold_type':
+       'low'for low threshold value
+       'high'for high threshold value
+        [flag1.flag2]: for flags  
+        'bool' for bollean flags (can be 'g','b' or True/Flase or 1/0)      
+   'decimal_points':
+       number of decimal points in rounding
+       (this is used in displaying criteria in the dialog box)
+       -999 means Exponent with 3 descimal points for floats and string for string
+    '''
+    
+    acceptance_criteria={}
+    # --------------------------------
+    # 'DE-SPEC'
+    # --------------------------------
+
+    # low cutoff value
+    category='DE-SPEC'
+    for crit in ['specimen_n']:
+        acceptance_criteria[crit]={} 
+        acceptance_criteria[crit]['category']=category
+        acceptance_criteria[crit]['criterion_name']=crit
+        acceptance_criteria[crit]['value']=-999
+        acceptance_criteria[crit]['threshold_type']="low"
+        acceptance_criteria[crit]['decimal_points']=0
+
+    # high cutoff value
+    category='DE-SPEC'
+    for crit in ['specimen_mad','specimen_dang','specimen_alpha95']:
+        acceptance_criteria[crit]={} 
+        acceptance_criteria[crit]['category']=category
+        acceptance_criteria[crit]['criterion_name']=crit
+        acceptance_criteria[crit]['value']=-999
+        acceptance_criteria[crit]['threshold_type']="high"
+        acceptance_criteria[crit]['decimal_points']=1        
+
+    # flag
+    for crit in ['specimen_direction_type']:
+        acceptance_criteria[crit]={} 
+        acceptance_criteria[crit]['category']=category
+        acceptance_criteria[crit]['criterion_name']=crit
+        acceptance_criteria[crit]['value']=-999
+        if crit=='specimen_direction_type':
+            acceptance_criteria[crit]['threshold_type']=['l','p']
+        if crit=='specimen_polarity':
+            acceptance_criteria[crit]['threshold_type']=['n','r','t','e','i']
+        acceptance_criteria[crit]['decimal_points']=-999
+        
+    # --------------------------------
+    # 'DE-SAMP'
+    # --------------------------------
+
+    # low cutoff value
+    category='DE-SAMP'
+    for crit in ['sample_n','sample_n_lines','sample_n_planes']:
+        acceptance_criteria[crit]={} 
+        acceptance_criteria[crit]['category']=category
+        acceptance_criteria[crit]['criterion_name']=crit
+        acceptance_criteria[crit]['value']=-999
+        acceptance_criteria[crit]['threshold_type']="low"
+        acceptance_criteria[crit]['decimal_points']=0
+
+    # high cutoff value
+    category='DE-SAMP'
+    for crit in ['sample_r','sample_alpha95','sample_sigma','sample_k','sample_tilt_correction']:
+        acceptance_criteria[crit]={} 
+        acceptance_criteria[crit]['category']=category
+        acceptance_criteria[crit]['criterion_name']=crit
+        acceptance_criteria[crit]['value']=-999
+        acceptance_criteria[crit]['threshold_type']="high"
+        if crit in ['sample_tilt_correction']:
+            acceptance_criteria[crit]['decimal_points']=0            
+        elif crit in ['sample_alpha95']:
+            acceptance_criteria[crit]['decimal_points']=1            
+        else:
+            acceptance_criteria[crit]['decimal_points']=-999
+
+    # flag
+    for crit in ['sample_direction_type','sample_polarity']:
+        acceptance_criteria[crit]={} 
+        acceptance_criteria[crit]['category']=category
+        acceptance_criteria[crit]['criterion_name']=crit
+        acceptance_criteria[crit]['value']=-999
+        if crit=='sample_direction_type':
+            acceptance_criteria[crit]['threshold_type']=['l','p']
+        if crit=='sample_polarity':
+            acceptance_criteria[crit]['threshold_type']=['n','r','t','e','i']
+        acceptance_criteria[crit]['decimal_points']=-999
+
+    # --------------------------------
+    # 'DE-SITE'
+    # --------------------------------
+
+    # low cutoff value
+    category='DE-SITE'
+    for crit in ['site_n','site_n_lines','site_n_planes']:
+        acceptance_criteria[crit]={} 
+        acceptance_criteria[crit]['category']=category
+        acceptance_criteria[crit]['criterion_name']=crit
+        acceptance_criteria[crit]['value']=-999
+        acceptance_criteria[crit]['threshold_type']="low"
+        acceptance_criteria[crit]['decimal_points']=0
+    
+    # high cutoff value
+    for crit in ['site_k','site_r','site_alpha95','site_sigma','site_tilt_correction']:
+        acceptance_criteria[crit]={} 
+        acceptance_criteria[crit]['category']=category
+        acceptance_criteria[crit]['criterion_name']=crit
+        acceptance_criteria[crit]['value']=-999
+        acceptance_criteria[crit]['threshold_type']="high"
+        if crit in ['site_tilt_correction']:
+            acceptance_criteria[crit]['decimal_points']=0            
+        else:
+            acceptance_criteria[crit]['decimal_points']=1
+        
+    # flag                
+    for crit in ['site_direction_type','site_polarity']:
+        acceptance_criteria[crit]={} 
+        acceptance_criteria[crit]['category']=category
+        acceptance_criteria[crit]['criterion_name']=crit
+        acceptance_criteria[crit]['value']=-999
+        if crit=='site_direction_type':
+            acceptance_criteria[crit]['threshold_type']=['l','p']
+        if crit=='site_polarity':
+            acceptance_criteria[crit]['threshold_type']=['n','r','t','e','i']
+        acceptance_criteria[crit]['decimal_points']=-999
+
+    # --------------------------------
+    # 'DE-STUDY' 
+    # --------------------------------
+    category='DE-STUDY'
+    # low cutoff value              
+    for crit in ['average_k','average_n','average_nn','average_nnn','average_r']:
+        acceptance_criteria[crit]={} 
+        acceptance_criteria[crit]['category']=category
+        acceptance_criteria[crit]['criterion_name']=crit
+        acceptance_criteria[crit]['value']=-999
+        acceptance_criteria[crit]['threshold_type']="low"
+        if crit in ['average_n','average_nn','average_nnn']:
+            acceptance_criteria[crit]['decimal_points']=0
+        elif crit in ['average_alpha95']:
+            acceptance_criteria[crit]['decimal_points']=1
+        else:
+            acceptance_criteria[crit]['decimal_points']=-999
+    
+    # high cutoff value                      
+    for crit in ['average_alpha95','average_sigma']:
+        acceptance_criteria[crit]={} 
+        acceptance_criteria[crit]['category']=category
+        acceptance_criteria[crit]['criterion_name']=crit
+        acceptance_criteria[crit]['value']=-999
+        acceptance_criteria[crit]['threshold_type']="high"
+        if crit in ['average_alpha95']:
+            acceptance_criteria[crit]['decimal_points']=1
+        else :
+            acceptance_criteria[crit]['decimal_points']=-999
+
+
+    # --------------------------------
+    # 'IE-SPEC' (a long list from SPD.v.1.0)
+    # --------------------------------
+    category='IE-SPEC'
+
+    # low cutoff value
+    for crit in ['specimen_int_n','specimen_f','specimen_fvds','specimen_frac','specimen_q','specimen_w','specimen_r_sq','specimen_int_ptrm_n',\
+    'specimen_int_ptrm_tail_n','specimen_ac_n']:
+        acceptance_criteria[crit]={} 
+        acceptance_criteria[crit]['category']=category
+        acceptance_criteria[crit]['criterion_name']=crit
+        acceptance_criteria[crit]['value']=-999
+        acceptance_criteria[crit]['threshold_type']="low"
+        acceptance_criteria[crit]['decimal_points']=0
+        if crit in ['specimen_int_n','specimen_int_ptrm_n','specimen_int_ptrm_tail_n','specimen_ac_n']:
+            acceptance_criteria[crit]['decimal_points']=0
+        elif crit in ['specimen_f','specimen_fvds','specimen_frac','specimen_q']:
+            acceptance_criteria[crit]['decimal_points']=2
+        else :
+            acceptance_criteria[crit]['decimal_points']=-999
+    
+    # high cutoff value
+    for crit in ['specimen_b_sigma','specimen_b_beta','specimen_g','specimen_gmax','specimen_k','specimen_k_sse',\
+    'specimen_coeff_det_sq','specimen_z','specimen_z_md','specimen_int_mad','specimen_int_mad_anc','specimen_int_alpha','specimen_alpha','specimen_alpha_prime',\
+    'specimen_theta','specimen_int_dang','specimen_int_crm','specimen_ptrm','specimen_dck','specimen_drat','specimen_maxdev','specimen_cdrat',\
+    'specimen_drats','specimen_mdrat','specimen_mdev','specimen_dpal','specimen_tail_drat','specimen_dtr','specimen_md','specimen_dt','specimen_dac','specimen_gamma']:
+        acceptance_criteria[crit]={} 
+        acceptance_criteria[crit]['category']=category
+        acceptance_criteria[crit]['criterion_name']=crit
+        acceptance_criteria[crit]['value']=-999
+        acceptance_criteria[crit]['threshold_type']="high"
+        if crit in ['specimen_int_mad','specimen_int_mad_anc','specimen_int_dang','specimen_drat','specimen_cdrat','specimen_drats','specimen_tail_drat','specimen_dtr','specimen_md','specimen_dac','specimen_gamma']:
+            acceptance_criteria[crit]['decimal_points']=1
+        elif crit in ['specimen_gmax']:
+            acceptance_criteria[crit]['decimal_points']=2
+        elif crit in ['specimen_b_sigma','specimen_b_beta','specimen_g','specimen_k']:
+            acceptance_criteria[crit]['decimal_points']=3
+        else :
+            acceptance_criteria[crit]['decimal_points']=-999
+    
+    # flags                                       
+    for crit in ['specimen_scat']:
+        acceptance_criteria[crit]={} 
+        acceptance_criteria[crit]['category']=category
+        acceptance_criteria[crit]['criterion_name']=crit
+        acceptance_criteria[crit]['value']=-999
+        acceptance_criteria[crit]['threshold_type']='bool'
+        acceptance_criteria[crit]['decimal_points']=-999
+                                        
+                                        
+    # --------------------------------
+    # 'IE-SAMP' 
+    # --------------------------------
+    category='IE-SAMP'
+
+    # low cutoff value              
+    for crit in ['sample_int_n']:
+        acceptance_criteria[crit]={} 
+        acceptance_criteria[crit]['category']=category
+        acceptance_criteria[crit]['criterion_name']=crit
+        acceptance_criteria[crit]['value']=-999
+        acceptance_criteria[crit]['threshold_type']="low"
+        acceptance_criteria[crit]['decimal_points']=0
+
+    # high cutoff value                      
+    for crit in ['sample_int_rel_sigma','sample_int_rel_sigma_perc','sample_int_sigma','sample_int_sigma_perc']:
+        acceptance_criteria[crit]={} 
+        acceptance_criteria[crit]['category']=category
+        acceptance_criteria[crit]['criterion_name']=crit
+        acceptance_criteria[crit]['value']=-999
+        acceptance_criteria[crit]['threshold_type']="high"
+        if crit in ['sample_int_rel_sigma_perc','sample_int_sigma_perc']:
+            acceptance_criteria[crit]['decimal_points']=1
+        else :
+            acceptance_criteria[crit]['decimal_points']=-999
+        
+
+    # --------------------------------
+    # 'IE-SITE' 
+    # --------------------------------
+    category='IE-SITE'
+
+    # low cutoff value              
+    for crit in ['site_int_n']:
+        acceptance_criteria[crit]={} 
+        acceptance_criteria[crit]['category']=category
+        acceptance_criteria[crit]['criterion_name']=crit
+        acceptance_criteria[crit]['value']=-999
+        acceptance_criteria[crit]['threshold_type']="low"
+        acceptance_criteria[crit]['decimal_points']=0
+
+    # high cutoff value                      
+    for crit in ['site_int_rel_sigma','site_int_rel_sigma_perc','site_int_sigma','site_int_sigma_perc']:
+        acceptance_criteria[crit]={} 
+        acceptance_criteria[crit]['category']=category
+        acceptance_criteria[crit]['criterion_name']=crit
+        acceptance_criteria[crit]['value']=-999
+        acceptance_criteria[crit]['threshold_type']="high"
+        if crit in ['site_int_rel_sigma_perc','site_int_sigma_perc']:
+            acceptance_criteria[crit]['decimal_points']=1
+        else :
+            acceptance_criteria[crit]['decimal_points']=-999
+
+    # --------------------------------
+    # 'IE-STUDY' 
+    # --------------------------------
+    category='IE-STUDY'
+    # low cutoff value              
+    for crit in ['average_int_n','average_int_n','average_int_nn','average_int_nnn',]:
+        acceptance_criteria[crit]={} 
+        acceptance_criteria[crit]['category']=category
+        acceptance_criteria[crit]['criterion_name']=crit
+        acceptance_criteria[crit]['value']=-999
+        acceptance_criteria[crit]['threshold_type']="low"
+        acceptance_criteria[crit]['decimal_points']=0
+    
+    # high cutoff value                      
+    for crit in ['average_int_rel_sigma','average_int_rel_sigma_perc','average_int_sigma']:
+        acceptance_criteria[crit]={} 
+        acceptance_criteria[crit]['category']=category
+        acceptance_criteria[crit]['criterion_name']=crit
+        acceptance_criteria[crit]['value']=-999
+        acceptance_criteria[crit]['threshold_type']="high"
+        if crit in ['average_int_rel_sigma_perc']:
+            acceptance_criteria[crit]['decimal_points']=1
+        else :
+            acceptance_criteria[crit]['decimal_points']=-999
+
+    # --------------------------------
+    # 'NPOLE' 
+    # --------------------------------
+    category='NPOLE'
+    # flags                                       
+    for crit in ['site_polarity']:
+        acceptance_criteria[crit]={} 
+        acceptance_criteria[crit]['category']=category
+        acceptance_criteria[crit]['criterion_name']=crit
+        acceptance_criteria[crit]['value']=-999
+        acceptance_criteria[crit]['threshold_type']=['n','r']
+        acceptance_criteria[crit]['decimal_points']=-999
+
+    # --------------------------------
+    # 'NPOLE' 
+    # --------------------------------
+    category='RPOLE'
+    # flags                                       
+    for crit in ['site_polarity']:
+        acceptance_criteria[crit]={} 
+        acceptance_criteria[crit]['category']=category
+        acceptance_criteria[crit]['criterion_name']=crit
+        acceptance_criteria[crit]['value']=-999
+        acceptance_criteria[crit]['threshold_type']=['n','r']
+        acceptance_criteria[crit]['decimal_points']=-999
+
+                                   
+    # --------------------------------
+    # 'VADM' 
+    # --------------------------------
+    category='VADM'
+    # low cutoff value              
+    for crit in ['vadm_n']:
+        acceptance_criteria[crit]={} 
+        acceptance_criteria[crit]['category']=category
+        acceptance_criteria[crit]['criterion_name']=crit
+        acceptance_criteria[crit]['value']=-999
+        acceptance_criteria[crit]['threshold_type']="low"
+        if crit in ['vadm_n']:
+            acceptance_criteria[crit]['decimal_points']=0
+        else :
+            acceptance_criteria[crit]['decimal_points']=-999
+
+    # --------------------------------
+    # 'VADM' 
+    # --------------------------------
+    category='VADM'
+    # low cutoff value              
+    for crit in ['vadm_n']:
+        acceptance_criteria[crit]={} 
+        acceptance_criteria[crit]['category']=category
+        acceptance_criteria[crit]['criterion_name']=crit
+        acceptance_criteria[crit]['value']=-999
+        acceptance_criteria[crit]['threshold_type']="low"
+        acceptance_criteria[crit]['decimal_points']=0
+
+    # high cutoff value              
+    for crit in ['vadm_sigma']:
+        acceptance_criteria[crit]={} 
+        acceptance_criteria[crit]['category']=category
+        acceptance_criteria[crit]['criterion_name']=crit
+        acceptance_criteria[crit]['value']=-999
+        acceptance_criteria[crit]['threshold_type']="low"
+        acceptance_criteria[crit]['decimal_points']=-999
+
+    # --------------------------------
+    # 'VADM' 
+    # --------------------------------
+    category='VDM'
+    # low cutoff value              
+    for crit in ['vdm_n']:
+        acceptance_criteria[crit]={} 
+        acceptance_criteria[crit]['category']=category
+        acceptance_criteria[crit]['criterion_name']=crit
+        acceptance_criteria[crit]['value']=-999
+        acceptance_criteria[crit]['threshold_type']="low"
+        acceptance_criteria[crit]['decimal_points']=0
+
+    # high cutoff value              
+    for crit in ['vdm_sigma']:
+        acceptance_criteria[crit]={} 
+        acceptance_criteria[crit]['category']=category
+        acceptance_criteria[crit]['criterion_name']=crit
+        acceptance_criteria[crit]['value']=-999
+        acceptance_criteria[crit]['threshold_type']="low"
+        acceptance_criteria[crit]['decimal_points']=-999
+                                                                                                                                                                                                                  
+    # --------------------------------
+    # 'VGP' 
+    # --------------------------------
+    category='VDM'
+    # low cutoff value              
+    for crit in ['vgp_n']:
+        acceptance_criteria[crit]={} 
+        acceptance_criteria[crit]['category']=category
+        acceptance_criteria[crit]['criterion_name']=crit
+        acceptance_criteria[crit]['value']=-999
+        acceptance_criteria[crit]['threshold_type']="low"
+        acceptance_criteria[crit]['decimal_points']=0
+
+    # high cutoff value              
+    for crit in ['vgp_alpha95','vgp_dm','vgp_dp','vgp_sigma']:
+        acceptance_criteria[crit]={} 
+        acceptance_criteria[crit]['category']=category
+        acceptance_criteria[crit]['criterion_name']=crit
+        acceptance_criteria[crit]['value']=-999
+        acceptance_criteria[crit]['threshold_type']="low"
+        if crit in ['vgp_alpha95']:
+            acceptance_criteria[crit]['decimal_points','vgp_dm','vgp_dp']=1
+        else :
+            acceptance_criteria[crit]['decimal_points']=-999
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+    # --------------------------------
+    # 'AGE'     
+    # --------------------------------
+    category='AGE'
+    # low cutoff value              
+    for crit in ['average_age_min']:
+        acceptance_criteria[crit]={} 
+        acceptance_criteria[crit]['category']=category
+        acceptance_criteria[crit]['criterion_name']=crit
+        acceptance_criteria[crit]['value']=-999
+        acceptance_criteria[crit]['threshold_type']="low"
+        acceptance_criteria[crit]['decimal_points']=-999
+
+    # high cutoff value                      
+    for crit in ['average_age_max','average_age_sigma']:
+        acceptance_criteria[crit]={} 
+        acceptance_criteria[crit]['category']=category
+        acceptance_criteria[crit]['criterion_name']=crit
+        acceptance_criteria[crit]['value']=-999
+        acceptance_criteria[crit]['threshold_type']="high"
+        acceptance_criteria[crit]['decimal_points']=-999
+
+    # flags                                       
+    for crit in ['average_age_unit']:
+        acceptance_criteria[crit]={} 
+        acceptance_criteria[crit]['category']=category
+        acceptance_criteria[crit]['criterion_name']=crit
+        acceptance_criteria[crit]['value']=-999
+        acceptance_criteria[crit]['threshold_type']=['Ga','Ka','Ma','Years AD (+/-)','Years BP','Years Cal AD (+/-)','Years Cal BP']
+        acceptance_criteria[crit]['decimal_points']=-999
+ 
+    # --------------------------------
+    # 'ANI'     
+    # --------------------------------
+    category='ANI'
+    # high cutoff value              
+    for crit in ['anisotropy_alt','sample_aniso_mean','site_aniso_mean']: # value is in precent
+        acceptance_criteria[crit]={} 
+        acceptance_criteria[crit]['category']=category
+        acceptance_criteria[crit]['criterion_name']=crit
+        acceptance_criteria[crit]['value']=-999
+        acceptance_criteria[crit]['threshold_type']="high"
+        acceptance_criteria[crit]['decimal_points']=3
+                                                                                                                                                                                                                      
+    # flags                                       
+    for crit in ['anisotropy_ftest_flag']:
+        acceptance_criteria[crit]={} 
+        acceptance_criteria[crit]['category']=category
+        acceptance_criteria[crit]['criterion_name']=crit
+        acceptance_criteria[crit]['value']=-999
+        acceptance_criteria[crit]['threshold_type']='bool'
+        acceptance_criteria[crit]['decimal_points']=-999
+                                                                                                                                                                                                                                                                                                                                                                                                                                           
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+    return(acceptance_criteria)
+
+
+
+def read_criteria_from_file(path,acceptance_criteria):
+    '''
+    Read accceptance criteria from magic pmag_criteria file
+    # old format:
+    multiple lines.  pmag_criteria_code defines the type of criteria
+    
+    to deal with old format this function reads all the lines and ignore empty cells.
+    i.e., the program assumes that in each column there is only one value (in one of the lines)   
+
+    
+    # New format for thellier_gui and demag_gui:
+    one long line. pmag_criteria_code=ACCEPT
+    
+    path is the full path to the criteria file
+    
+    the fucntion takes exiting acceptance_criteria
+    and updtate it with criteria from file
+
+    output:
+    acceptance_criteria={} 
+    acceptance_criteria[MagIC Variable Names]={}
+    acceptance_criteria[MagIC Variable Names]['value']: 
+        a number for acceptance criteria value
+        -999 for N/A
+        1/0 for True/False or Good/Bad
+    acceptance_criteria[MagIC Variable Names]['threshold_type']: 
+        "low":  lower cutoff value i.e. crit>=value pass criteria
+        "high": high cutoff value i.e. crit<=value pass criteria
+        [string1,string2,....]: for flags
+    acceptance_criteria[MagIC Variable Names]['decimal_points']:number of decimal points in rounding
+            (this is used in displaying criteria in the dialog box)
+    
+    '''    
+    acceptance_criteria_list=acceptance_criteria.keys()
+    meas_data,file_type=magic_read(path)
+    for rec in meas_data:
+        for crit in rec.keys():
+            rec[crit]=rec[crit].strip('\n')
+            if crit in ['pmag_criteria_code','criteria_definition','magic_experiment_names','er_citation_names']:
+                continue
+            elif rec[crit]=="":
+                continue
+            elif crit not in acceptance_criteria_list:
+                print "-W- WARNING: criteria code %s is not supported by PmagPy GUI. please check"%crit
+                acceptance_criteria[crit]={}
+                acceptance_criteria[crit]['value']=rec[crit]
+                acceptance_criteria[crit]['threshold_type']="inherited"
+                acceptance_criteria[crit]['decimal_points']=-999
+                
+            # bollean flag
+            elif acceptance_criteria[crit]['threshold_type']=='bool':
+                if str(rec[crit]) in ['1','g','True','TRUE']:
+                    acceptance_criteria[crit]['value']=True
+                else:
+                    acceptance_criteria[crit]['value']=False
+                                 
+            # criteria as flags
+            elif type(acceptance_criteria[crit]['threshold_type'])==list:
+                if str(rec[crit]) in acceptance_criteria[crit]['threshold_type']:
+                    acceptance_criteria[crit]['value']=str(rec[crit])
+                else:
+                    print "-W- WARNING: data %s from criteria code  %s and is not supported by PmagPy GUI. please check"%(crit,rec[crit])
+            elif float(rec[crit]) == -999:
+                continue                
+            else:
+                acceptance_criteria[crit]['value']=float(rec[crit])
+    return(acceptance_criteria)   
+
+def write_criteria_to_file(path,acceptance_criteria):
+    crit_list=acceptance_criteria.keys()
+    crit_list.sort()
+    rec={}
+    rec['pmag_criteria_code']="ACCEPT"
+    rec['criteria_definition']=""
+    rec['er_citation_names']="This study"
+            
+    for crit in crit_list:
+        # ignore criteria that are not in MagIc model 2.5
+        if 'category' in acceptance_criteria[crit].keys():
+            if acceptance_criteria[crit]['category']=='thellier_gui':
+                continue        
+        if type(acceptance_criteria[crit]['value'])==str:
+            if acceptance_criteria[crit]['value'] != "-999" and acceptance_criteria[crit]['value'] != "":
+                rec[crit]=acceptance_criteria[crit]['value']
+        elif type(acceptance_criteria[crit]['value'])==int:
+            if acceptance_criteria[crit]['value'] !=-999:
+                rec[crit]="%.i"%(acceptance_criteria[crit]['value'])
+        elif type(acceptance_criteria[crit]['value'])==float:
+            if float(acceptance_criteria[crit]['value'])==-999:
+                continue
+            decimal_points=acceptance_criteria[crit]['decimal_points']
+            if decimal_points != -999:
+                command="rec[crit]='%%.%sf'%%(acceptance_criteria[crit]['value'])"%(decimal_points)
+                exec command
+            else:
+                rec[crit]="%e"%(acceptance_criteria[crit]['value'])
+        elif type(acceptance_criteria[crit]['value'])==bool:
+                rec[crit]=str(acceptance_criteria[crit]['value'])
+        else:
+            print "-W- WARNING: statistic %s not written to file:",acceptance_criteria[crit]['value']
+    magic_write(path,[rec],"pmag_criteria")
+    
