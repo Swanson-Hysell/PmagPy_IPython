@@ -12,36 +12,6 @@ def iflip(D): #function simplified from PmagPy pmag.flip function
         d,i=(rec[0]-180.)%360.,-rec[1]
         Dflip.append([d,i,1.])
     return Dflip
-
-def iplotDI(DIblock,color='k'):
-    """
-    Plot declination, inclination data on a equal area plot
-
-    This function modifies the plotDI function of PmagPy for use in the IPython notebook environment
-
-    Parameters
-    ----------
-
-    DIblock : a DIblock is comprise of a list of unit vectors [dec,inc,1.]
-    color : the default color is black. Other colors can be chosen (e.g. 'r')
-    """
-    # initialize the variables
-    X_down,X_up,Y_down,Y_up=[],[],[],[]
-    for rec in DIblock:
-        Up,Down=0,0
-        XY=pmag.dimap(rec[0],rec[1])
-        if rec[1] >= 0:         
-            X_down.append(XY[0])
-            Y_down.append(XY[1])
-        else:
-            X_up.append(XY[0])
-            Y_up.append(XY[1])
-
-    if len(X_up)>0:
-        pylab.scatter(X_up,Y_up,facecolors='none', edgecolors=color)
-
-    if len(X_down)>0: 
-        pylab.scatter(X_down,Y_down,facecolors=color, edgecolors=color)
         
 def iBootstrap(Data1,Data2,NumSims=1000):
     """
@@ -70,8 +40,6 @@ def iBootstrap(Data1,Data2,NumSims=1000):
     pylab.figure(CDF['Y'],figsize=(4,4),dpi=160)
     pylab.figure(CDF['Z'],figsize=(4,4),dpi=160)
     pmagplotlib.plotCOM(CDF,BDI1,BDI2,["",""])
-
-
     
 def iWatsonV(Data1,Data2,NumSims=5000):
     """
@@ -200,6 +168,68 @@ def lat_from_i(inc):
     rad=numpy.pi/180.
     paleo_lat=numpy.arctan( 0.5*numpy.tan(inc*rad))/rad
     return paleo_lat
+
+
+def iplotDI(DIblock,color='k'):
+    """
+    Plot declination, inclination data on an equal area plot
+
+    This function modifies the plotDI function of PmagPy for use in the IPython notebook environment
+
+    Parameters
+    ----------
+
+    DIblock : a DIblock is comprise of a list of unit vectors [dec,inc,1.]
+    color : the default color is black. Other colors can be chosen (e.g. 'r')
+    """
+    # initialize the variables
+    X_down,X_up,Y_down,Y_up=[],[],[],[]
+    for rec in DIblock:
+        Up,Down=0,0
+        XY=pmag.dimap(rec[0],rec[1])
+        if rec[1] >= 0:         
+            X_down.append(XY[0])
+            Y_down.append(XY[1])
+        else:
+            X_up.append(XY[0])
+            Y_up.append(XY[1])
+
+    if len(X_up)>0:
+        pylab.scatter(X_up,Y_up,facecolors='none', edgecolors=color)
+
+    if len(X_down)>0: 
+        pylab.scatter(X_down,Y_down,facecolors=color, edgecolors=color)
+
+def iplotDImean(Dec,Inc,a95,color='k',marker='o',label=''):
+    """
+    Plot a mean declination, inclination with alpha_95 ellipse on an equal area plot.
+
+    Before this function is called a plot needs to be initialized with code that looks 
+    something like:
+    >fignum = 1
+    >pylab.figure(num=fignum,figsize=(10,10),dpi=160)
+    >pmagplotlib.plotNET(fignum)
+
+    Parameters
+    ----------
+
+    Dec : declination of mean being plotted
+    Inc : inclination of mean being plotted
+    a95 : a95 confidence ellipse of mean being plotted
+    color : the default color is black. Other colors can be chosen (e.g. 'r')
+    marker : the default is a circle. Other symbols can be chose (e.g. 's')
+    label : the default is no label. Labels can be assigned
+    """
+    DI_dimap=pmag.dimap(Dec,Inc)
+    pylab.plot(DI_dimap[0],DI_dimap[1],color=color,marker=marker,label=label)
+    Xcirc,Ycirc=[],[]
+    Da95,Ia95=pmag.circ(Dec,Inc,a95)
+    legend(loc=2)
+    for k in  range(len(Da95)):
+        XY=pmag.dimap(Da95[k],Ia95[k])
+        Xcirc.append(XY[0])
+        Ycirc.append(XY[1])
+    pylab.plot(Xcirc,Ycirc,color)
     
 def shoot(lon, lat, azimuth, maxdist=None):
     """
@@ -289,7 +319,8 @@ def equi(m, centerlon, centerlat, radius, color):
 
 def poleplot(mapname,plong,plat,A95,label='',color='k',marker='o'):
     """
-    This function plots a paleomagnetic pole on whatever current map projection has been set using the basemap plotting library.
+    This function plots a paleomagnetic pole and A95 error ellipse on whatever 
+    current map projection has been set using the basemap plotting library.
 
     Parameters
     -----------
