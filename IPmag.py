@@ -224,7 +224,7 @@ def iplotDImean(Dec,Inc,a95,color='k',marker='o',label=''):
     pylab.plot(DI_dimap[0],DI_dimap[1],color=color,marker=marker,label=label)
     Xcirc,Ycirc=[],[]
     Da95,Ia95=pmag.circ(Dec,Inc,a95)
-    legend(loc=2)
+    pylab.legend(loc=2)
     for k in  range(len(Da95)):
         XY=pmag.dimap(Da95[k],Ia95[k])
         Xcirc.append(XY[0])
