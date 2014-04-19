@@ -236,7 +236,8 @@ def iplotDImean(Dec,Inc,a95,color='k',marker='o',label=''):
     
 def shoot(lon, lat, azimuth, maxdist=None):
     """
-    This function enables A95 error ellipses to be drawn in basemap around paleomagnetic poles in conjunction with equi
+    This function enables A95 error ellipses to be drawn in basemap around paleomagnetic
+    poles in conjunction with equi
     (from: http://www.geophysique.be/2011/02/20/matplotlib-basemap-tutorial-09-drawing-circles/)
     """
     glat1 = lat * np.pi / 180.
@@ -303,7 +304,8 @@ def shoot(lon, lat, azimuth, maxdist=None):
 
 def equi(m, centerlon, centerlat, radius, color):
     """
-    This function enables A95 error ellipses to be drawn in basemap around paleomagnetic poles in conjunction with shoot
+    This function enables A95 error ellipses to be drawn in basemap around paleomagnetic poles
+    in conjunction with shoot
     (from: http://www.geophysique.be/2011/02/20/matplotlib-basemap-tutorial-09-drawing-circles/).
     """
     glon1 = centerlon
