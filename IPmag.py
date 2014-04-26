@@ -224,7 +224,10 @@ def iplotDImean(Dec,Inc,a95,color='k',marker='o',label=''):
     label : the default is no label. Labels can be assigned
     """
     DI_dimap=pmag.dimap(Dec,Inc)
-    pylab.plot(DI_dimap[0],DI_dimap[1],color=color,marker=marker,label=label)
+    if Inc < 0:
+        pylab.plot(DI_dimap[0],DI_dimap[1],markeredgecolor=color , markerfacecolor='white', marker=marker,label=label)
+    if Inc >= 0:
+        pylab.plot(DI_dimap[0],DI_dimap[1],color=color,marker=marker,label=label)
     Xcirc,Ycirc=[],[]
     Da95,Ia95=pmag.circ(Dec,Inc,a95)
     pylab.legend(loc=2)
