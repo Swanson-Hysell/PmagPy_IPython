@@ -226,7 +226,7 @@ def iplotNET(fignum):
     pylab.axis("equal")
     pylab.tight_layout()
 
-def iplotDI(DIblock,color='k'):
+def iplotDI(DIblock,color='k',label=''):
     """
     Plot declination, inclination data on an equal area plot
 
@@ -255,6 +255,7 @@ def iplotDI(DIblock,color='k'):
 
     if len(X_down)>0: 
         pylab.scatter(X_down,Y_down,facecolors=color, edgecolors=color)
+    pylab.legend(loc=2)
     pylab.tight_layout()
 
 def iplotDImean(Dec,Inc,a95,color='k',marker='o',label=''):
