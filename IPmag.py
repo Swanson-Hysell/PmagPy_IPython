@@ -172,6 +172,59 @@ def lat_from_i(inc):
     paleo_lat=np.arctan( 0.5*np.tan(inc*rad))/rad
     return paleo_lat
 
+def iplotNET(fignum):
+    """
+    draws circle and tick marks for equal area projection
+    """
+#
+# make the perimeter
+#
+    pylab.figure(num=fignum)
+    pylab.clf()
+    pylab.axis("off")
+    Dcirc=np.arange(0,361.)
+    Icirc=np.zeros(361,'f')
+    Xcirc,Ycirc=[],[]
+    for k in range(361):
+        XY= pmag.dimap(Dcirc[k],Icirc[k])
+        Xcirc.append(XY[0])
+        Ycirc.append(XY[1])
+    pylab.plot(Xcirc,Ycirc,'k')
+#
+# put on the tick marks
+    Xsym,Ysym=[],[]
+    for I in range(10,100,10):
+        XY=pmag.dimap(0.,I)
+        Xsym.append(XY[0])
+        Ysym.append(XY[1])
+    pylab.plot(Xsym,Ysym,'k+')
+    Xsym,Ysym=[],[]
+    for I in range(10,90,10):
+        XY=pmag.dimap(90.,I)
+        Xsym.append(XY[0])
+        Ysym.append(XY[1])
+    pylab.plot(Xsym,Ysym,'k+')
+    Xsym,Ysym=[],[]
+    for I in range(10,90,10):
+        XY=pmag.dimap(180.,I)
+        Xsym.append(XY[0])
+        Ysym.append(XY[1])
+    pylab.plot(Xsym,Ysym,'k+')
+    Xsym,Ysym=[],[]
+    for I in range(10,90,10):
+        XY=pmag.dimap(270.,I)
+        Xsym.append(XY[0])
+        Ysym.append(XY[1])
+    pylab.plot(Xsym,Ysym,'k+')
+    for D in range(0,360,10):
+        Xtick,Ytick=[],[]
+        for I in range(4):
+            XY=pmag.dimap(D,I)
+            Xtick.append(XY[0])
+            Ytick.append(XY[1])
+        pylab.plot(Xtick,Ytick,'k')
+    pylab.axis("equal")
+    pylab.tight_layout()
 
 def iplotDI(DIblock,color='k'):
     """
@@ -202,6 +255,7 @@ def iplotDI(DIblock,color='k'):
 
     if len(X_down)>0: 
         pylab.scatter(X_down,Y_down,facecolors=color, edgecolors=color)
+    pylab.tight_layout()
 
 def iplotDImean(Dec,Inc,a95,color='k',marker='o',label=''):
     """
@@ -210,8 +264,8 @@ def iplotDImean(Dec,Inc,a95,color='k',marker='o',label=''):
     Before this function is called a plot needs to be initialized with code that looks 
     something like:
     >fignum = 1
-    >pylab.figure(num=fignum,figsize=(10,10),dpi=160)
-    >pmagplotlib.plotNET(fignum)
+    >plt.figure(num=fignum,figsize=(10,10),dpi=160)
+    >IPmag.iplotNET(fignum)
 
     Parameters
     ----------
@@ -236,6 +290,7 @@ def iplotDImean(Dec,Inc,a95,color='k',marker='o',label=''):
         Xcirc.append(XY[0])
         Ycirc.append(XY[1])
     pylab.plot(Xcirc,Ycirc,color)
+    pylab.tight_layout()
     
 def shoot(lon, lat, azimuth, maxdist=None):
     """
