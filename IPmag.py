@@ -164,13 +164,21 @@ def iWatsonV(Data1,Data2,NumSims=5000):
             print "The McFadden and McElhinny (1990) classification for"
             print "this test is: 'INDETERMINATE;"
             
-def lat_from_i(inc):
+def lat_from_inc(inc):
     """
     Calculate paleolatitude from inclination using the dipole equation
     """
     rad=np.pi/180.
-    paleo_lat=np.arctan( 0.5*np.tan(inc*rad))/rad
+    paleo_lat=np.arctan(0.5*np.tan(inc*rad))/rad
     return paleo_lat
+
+def inc_from_lat(lat):
+    """
+    Calculate inclination predicted from latitude using the dipole equation
+    """
+    rad=numpy.pi/180.
+    inc=numpy.arctan(2*numpy.tan(lat*rad))/rad
+    return inc
 
 def iplotNET(fignum):
     """
