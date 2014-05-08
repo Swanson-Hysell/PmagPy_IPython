@@ -261,8 +261,7 @@ def iplotDI(DIblock,color='k',marker='o',legend='no',label=''):
 
     Parameters
     ----------
-
-    DIblock : a DIblock is comprise of a list of unit vectors [dec,inc,1.]
+    DIblock : a DIblock is comprised of a list of unit vectors [dec,inc,1.]
     color : the default color is black. Other colors can be chosen (e.g. 'r')
     marker : the default marker is a circle ('o')
     label : the default label is blank ('')
@@ -289,7 +288,7 @@ def iplotDI(DIblock,color='k',marker='o',legend='no',label=''):
         pylab.legend(loc=2)
     pylab.tight_layout()
 
-def iplotDImean(Dec,Inc,a95,color='k',marker='o',label=''):
+def iplotDImean(Dec,Inc,a95,color='k',marker='o',label='',legend='no'):
     """
     Plot a mean declination, inclination with alpha_95 ellipse on an equal area plot.
 
@@ -308,6 +307,7 @@ def iplotDImean(Dec,Inc,a95,color='k',marker='o',label=''):
     color : the default color is black. Other colors can be chosen (e.g. 'r')
     marker : the default is a circle. Other symbols can be chose (e.g. 's')
     label : the default is no label. Labels can be assigned
+    legend : the default is no legend ('no'). Putting 'yes' will plot a legend.
     """
     DI_dimap=pmag.dimap(Dec,Inc)
     if Inc < 0:
@@ -316,7 +316,8 @@ def iplotDImean(Dec,Inc,a95,color='k',marker='o',label=''):
         pylab.plot(DI_dimap[0],DI_dimap[1],color=color,marker=marker,label=label)
     Xcirc,Ycirc=[],[]
     Da95,Ia95=pmag.circ(Dec,Inc,a95)
-    pylab.legend(loc=2)
+    if legend=='yes':
+        pylab.legend(loc=2)
     for k in  range(len(Da95)):
         XY=pmag.dimap(Da95[k],Ia95[k])
         Xcirc.append(XY[0])
