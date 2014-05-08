@@ -3,6 +3,25 @@ import pylab
 import numpy as np
 import matplotlib.pyplot as plt
 
+def ifishrot(k=20,n=100,Dec=0,Inc=90):
+    """
+    Generates Fisher distributed unit vectors from a specified distribution 
+    using the pmag.py fshdev and dodirot functions
+    
+    Parameters
+    ----------
+    k kappas precision parameter (default is 20) 
+    n number of vectors to determine (default is 100)
+    Dec mean declination of data set (default is 0)
+    Inc mean inclination of data set (default is 90)
+    """
+    directions=[]
+    for k in range(n):
+        dec,inc=pmag.fshdev(kappa) 
+        drot,irot=pmag.dodirot(dec,inc,Dec,Inc)
+        directions.append([drot,irot,1.])
+    return directions
+
 def iflip(D): #function simplified from PmagPy pmag.flip function
     """
     This function returns the antipode (flips) of the unit vectors in D (dec,inc,length).
@@ -176,8 +195,8 @@ def inc_from_lat(lat):
     """
     Calculate inclination predicted from latitude using the dipole equation
     """
-    rad=numpy.pi/180.
-    inc=numpy.arctan(2*numpy.tan(lat*rad))/rad
+    rad=np.pi/180.
+    inc=np.arctan(2*np.tan(lat*rad))/rad
     return inc
 
 def iplotNET(fignum):
