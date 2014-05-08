@@ -449,7 +449,7 @@ def vgpplot(mapname,plong,plat,label='',color='k',marker='o'):
     centerlon, centerlat = mapname(plong,plat)
     mapname.scatter(centerlon,centerlat,20,marker=marker,color=color,label=label,zorder=100)
 
-def VGP_calc(dataframe):
+def vgpcalc(dataframe):
     """
     This function calculates paleomagnetic poles from directional data within a pandas.DataFrame
 
