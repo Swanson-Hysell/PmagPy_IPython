@@ -10,14 +10,14 @@ def ifishrot(k=20,n=100,Dec=0,Inc=90):
     
     Parameters
     ----------
-    k kappas precision parameter (default is 20) 
+    k kappa precision parameter (default is 20) 
     n number of vectors to determine (default is 100)
     Dec mean declination of data set (default is 0)
     Inc mean inclination of data set (default is 90)
     """
     directions=[]
-    for k in range(n):
-        dec,inc=pmag.fshdev(kappa) 
+    for data in range(n):
+        dec,inc=pmag.fshdev(k) 
         drot,irot=pmag.dodirot(dec,inc,Dec,Inc)
         directions.append([drot,irot,1.])
     return directions
@@ -253,7 +253,7 @@ def iplotNET(fignum):
     pylab.axis("equal")
     pylab.tight_layout()
 
-def iplotDI(DIblock,color='k',label=''):
+def iplotDI(DIblock,color='k',marker='o',legend='no',label=''):
     """
     Plot declination, inclination data on an equal area plot
 
@@ -264,6 +264,9 @@ def iplotDI(DIblock,color='k',label=''):
 
     DIblock : a DIblock is comprise of a list of unit vectors [dec,inc,1.]
     color : the default color is black. Other colors can be chosen (e.g. 'r')
+    marker : the default marker is a circle ('o')
+    label : the default label is blank ('')
+    legend : the default is no legend ('no'). Putting 'yes' will plot a legend.
     """
     # initialize the variables
     X_down,X_up,Y_down,Y_up=[],[],[],[]
@@ -278,11 +281,12 @@ def iplotDI(DIblock,color='k',label=''):
             Y_up.append(XY[1])
 
     if len(X_up)>0:
-        pylab.scatter(X_up,Y_up,facecolors='none', edgecolors=color)
+        pylab.scatter(X_up,Y_up,facecolors='none', edgecolors=color, marker=marker, label=label)
 
     if len(X_down)>0: 
-        pylab.scatter(X_down,Y_down,facecolors=color, edgecolors=color)
-    pylab.legend(loc=2)
+        pylab.scatter(X_down,Y_down,facecolors=color, edgecolors=color, marker=marker, label=label)
+    if legend=='yes':
+        pylab.legend(loc=2)
     pylab.tight_layout()
 
 def iplotDImean(Dec,Inc,a95,color='k',marker='o',label=''):
