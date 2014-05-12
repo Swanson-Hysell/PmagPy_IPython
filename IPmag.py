@@ -259,9 +259,12 @@ def iplotDI(DIblock,color='k',marker='o',legend='no',label=''):
 
     This function modifies the plotDI function of PmagPy for use in the IPython notebook environment
 
-    Parameters
-    ----------
+    Required Parameters
+    -----------
     DIblock : a DIblock is comprised of a list of unit vectors [dec,inc,1.]
+
+    Optional Parameters
+    -----------
     color : the default color is black. Other colors can be chosen (e.g. 'r')
     marker : the default marker is a circle ('o')
     label : the default label is blank ('')
@@ -298,12 +301,14 @@ def iplotDImean(Dec,Inc,a95,color='k',marker='o',label='',legend='no'):
     >plt.figure(num=fignum,figsize=(10,10),dpi=160)
     >IPmag.iplotNET(fignum)
 
-    Parameters
-    ----------
-
+    Required Parameters
+    -----------
     Dec : declination of mean being plotted
     Inc : inclination of mean being plotted
     a95 : a95 confidence ellipse of mean being plotted
+
+    Optional Parameters
+    -----------
     color : the default color is black. Other colors can be chosen (e.g. 'r')
     marker : the default is a circle. Other symbols can be chose (e.g. 's')
     label : the default is no label. Labels can be assigned.
@@ -418,15 +423,19 @@ def poleplot(mapname,plong,plat,A95,label='',color='k',marker='o',legend='no'):
     This function plots a paleomagnetic pole and A95 error ellipse on whatever 
     current map projection has been set using the basemap plotting library.
 
-    Parameters
+    Required Parameters
     -----------
     mapname : the name of the current map that has been developed using basemap
     plong : the longitude of the paleomagnetic pole being plotted (in degrees E)
     plat : the latitude of the paleomagnetic pole being plotted (in degrees)
     A95 : the A_95 confidence ellipse of the paleomagnetic pole (in degrees)
+    
+    Optional Parameters
+    -----------
     label : a string that is the label for the paleomagnetic pole being plotted
     color : the color desired for the symbol and its A95 ellipse (default is 'k' aka black)
     marker : the marker shape desired for the pole mean symbol (default is 'o' aka a circle)
+    legend : the default is no legend ('no'). Putting 'yes' will plot a legend.
     """
     centerlon, centerlat = mapname(plong,plat)
     A95_km=A95*111.32
@@ -440,14 +449,18 @@ def vgpplot(mapname,plong,plat,label='',color='k',marker='o',legend='no'):
     This function plots a paleomagnetic pole on whatever current map projection
     has been set using the basemap plotting library.
 
-    Parameters
+    Required Parameters
     -----------
     mapname : the name of the current map that has been developed using basemap
     plong : the longitude of the paleomagnetic pole being plotted (in degrees E)
     plat : the latitude of the paleomagnetic pole being plotted (in degrees)
+
+    Optional Parameters
+    -----------
     color : the color desired for the symbol and its A95 ellipse (default is 'k' aka black)
     marker : the marker shape desired for the pole mean symbol (default is 'o' aka a circle)
     label : the default is no label. Labels can be assigned.
+    legend : the default is no legend ('no'). Putting 'yes' will plot a legend.
     """
     centerlon, centerlat = mapname(plong,plat)
     mapname.scatter(centerlon,centerlat,20,marker=marker,color=color,label=label,zorder=100)
