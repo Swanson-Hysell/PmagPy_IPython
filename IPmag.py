@@ -306,7 +306,7 @@ def iplotDImean(Dec,Inc,a95,color='k',marker='o',label='',legend='no'):
     a95 : a95 confidence ellipse of mean being plotted
     color : the default color is black. Other colors can be chosen (e.g. 'r')
     marker : the default is a circle. Other symbols can be chose (e.g. 's')
-    label : the default is no label. Labels can be assigned
+    label : the default is no label. Labels can be assigned.
     legend : the default is no legend ('no'). Putting 'yes' will plot a legend.
     """
     DI_dimap=pmag.dimap(Dec,Inc)
@@ -413,7 +413,7 @@ def equi(m, centerlon, centerlat, radius, color):
     X,Y = m(X,Y)
     plt.plot(X,Y,color)
 
-def poleplot(mapname,plong,plat,A95,label='',color='k',marker='o'):
+def poleplot(mapname,plong,plat,A95,label='',color='k',marker='o',legend='no'):
     """
     This function plots a paleomagnetic pole and A95 error ellipse on whatever 
     current map projection has been set using the basemap plotting library.
@@ -432,8 +432,10 @@ def poleplot(mapname,plong,plat,A95,label='',color='k',marker='o'):
     A95_km=A95*111.32
     mapname.scatter(centerlon,centerlat,20,marker=marker,color=color,label=label,zorder=101)
     equi(mapname, plong, plat, A95_km,color)
+    if legend=='yes':
+        pylab.legend(loc=2)
 
-def vgpplot(mapname,plong,plat,label='',color='k',marker='o'):
+def vgpplot(mapname,plong,plat,label='',color='k',marker='o',legend='no'):
     """
     This function plots a paleomagnetic pole on whatever current map projection
     has been set using the basemap plotting library.
@@ -445,9 +447,12 @@ def vgpplot(mapname,plong,plat,label='',color='k',marker='o'):
     plat : the latitude of the paleomagnetic pole being plotted (in degrees)
     color : the color desired for the symbol and its A95 ellipse (default is 'k' aka black)
     marker : the marker shape desired for the pole mean symbol (default is 'o' aka a circle)
+    label : the default is no label. Labels can be assigned.
     """
     centerlon, centerlat = mapname(plong,plat)
     mapname.scatter(centerlon,centerlat,20,marker=marker,color=color,label=label,zorder=100)
+    if legend=='yes':
+        pylab.legend(loc=2)
 
 def vgpcalc(dataframe):
     """
