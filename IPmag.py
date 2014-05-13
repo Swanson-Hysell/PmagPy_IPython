@@ -71,11 +71,16 @@ def iWatsonV(Data1,Data2,NumSims=5000,plot='no'):
     directions and the corresponding McFadden and McElhinny (1990) classification is printed.
 
 
-    Parameters
+    Required parameters
     ----------
     Data1 : a list of directional data [dec,inc]
     Data2 : a list of directional data [dec,inc]
+    
+    Optional parameters
+    ----------
     NumSims : number of Monte Carlo simulations (default is 5000)
+    plot : the default is no plot ('no'). Putting 'yes' will the plot the CDF from
+    the Monte Carlo simulations.
     """   
     pars_1=pmag.fisher_mean(Data1)
     pars_2=pmag.fisher_mean(Data2)
