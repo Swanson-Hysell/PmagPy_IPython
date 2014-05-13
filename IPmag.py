@@ -44,7 +44,6 @@ def iBootstrap(Data1,Data2,NumSims=1000):
 
     Parameters
     ----------
-
     Data1 : a list of directional data [dec,inc]
     Data2 : a list of directional data [dec,inc]
     NumSims : number of bootstrap samples (default is 1000)
@@ -62,7 +61,7 @@ def iBootstrap(Data1,Data2,NumSims=1000):
     pylab.figure(CDF['Z'],figsize=(3,3),dpi=160)
     pmagplotlib.plotCOM(CDF,BDI1,BDI2,["",""])
     
-def iWatsonV(Data1,Data2,NumSims=5000):
+def iWatsonV(Data1,Data2,NumSims=5000,plot='no'):
     """
     Conduct a Watson V test for a common mean on two declination, inclination data sets
     
@@ -74,7 +73,6 @@ def iWatsonV(Data1,Data2,NumSims=5000):
 
     Parameters
     ----------
-
     Data1 : a list of directional data [dec,inc]
     Data2 : a list of directional data [dec,inc]
     NumSims : number of Monte Carlo simulations (default is 5000)
@@ -182,6 +180,14 @@ def iWatsonV(Data1,Data2,NumSims=5000):
         else:
             print "The McFadden and McElhinny (1990) classification for"
             print "this test is: 'INDETERMINATE;"
+
+    if plot=='yes':
+        CDF={'cdf':1}
+        #pmagplotlib.plot_init(CDF['cdf'],5,5)
+        p1 = pmagplotlib.plotCDF(CDF['cdf'],Vp,"Watson's V",'r',"")
+        p2 = pmagplotlib.plotVs(CDF['cdf'],[V],'g','-')
+        p3 = pmagplotlib.plotVs(CDF['cdf'],[Vp[k]],'b','--')
+        pmagplotlib.drawFIGS(CDF)
             
 def lat_from_inc(inc):
     """
