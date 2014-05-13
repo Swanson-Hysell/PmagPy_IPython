@@ -7,3 +7,8 @@ Example IPython notebook
 ==============
 
 Within this repository there is an IPython notebook with examples of IPmag.py, pmag.py and pmagplotlib.py being used in the interactive IPython notebook environment. The notebook can be run by cloning the repository and running it locally using IPython. Alternatively, the notebook can be viewed as a static html website at this link: http://nbviewer.ipython.org/github/Swanson-Hysell/PmagPy_IPython/blob/master/IPmag_examples.ipynb
+
+Example IPython notebook for MagIC workshop
+==============
+
+Within this repository there is simple IPython notebook with examples of IPmag.py, pmag.py and pmagplotlib.py being used in the interactive IPython notebook environment that was used as an interactive example at the end of the talk (PDF slides included in the repository). The notebook can be run by cloning the repository and running it locally using IPython. Alternatively, the notebook can be viewed as a static html website at this link: http://nbviewer.ipython.org/github/Swanson-Hysell/PmagPy_IPython/blob/master/MagIC_workshop_example.ipynb
