@@ -1,0 +1,626 @@
+
+% Default to the notebook output style
+
+    
+
+
+% Inherit from the specified cell style.
+
+
+
+
+    
+\documentclass{article}
+
+    
+    
+    \usepackage{graphicx} % Used to insert images
+    \usepackage{adjustbox} % Used to constrain images to a maximum size 
+    \usepackage{color} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage[utf8x]{inputenc} % Allow utf-8 characters in the tex document
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range 
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    
+
+    
+    
+    \definecolor{orange}{cmyk}{0,0.4,0.8,0.2}
+    \definecolor{darkorange}{rgb}{.71,0.21,0.01}
+    \definecolor{darkgreen}{rgb}{.12,.54,.11}
+    \definecolor{myteal}{rgb}{.26, .44, .56}
+    \definecolor{gray}{gray}{0.45}
+    \definecolor{lightgray}{gray}{.95}
+    \definecolor{mediumgray}{gray}{.8}
+    \definecolor{inputbackground}{rgb}{.95, .95, .85}
+    \definecolor{outputbackground}{rgb}{.95, .95, .95}
+    \definecolor{traceback}{rgb}{1, .95, .95}
+    % ansi colors
+    \definecolor{red}{rgb}{.6,0,0}
+    \definecolor{green}{rgb}{0,.65,0}
+    \definecolor{brown}{rgb}{0.6,0.6,0}
+    \definecolor{blue}{rgb}{0,.145,.698}
+    \definecolor{purple}{rgb}{.698,.145,.698}
+    \definecolor{cyan}{rgb}{0,.698,.698}
+    \definecolor{lightgray}{gray}{0.5}
+    
+    % bright ansi colors
+    \definecolor{darkgray}{gray}{0.25}
+    \definecolor{lightred}{rgb}{1.0,0.39,0.28}
+    \definecolor{lightgreen}{rgb}{0.48,0.99,0.0}
+    \definecolor{lightblue}{rgb}{0.53,0.81,0.92}
+    \definecolor{lightpurple}{rgb}{0.87,0.63,0.87}
+    \definecolor{lightcyan}{rgb}{0.5,1.0,0.83}
+    
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatability definitions
+    \def\gt{>}
+    \def\lt{<}
+    % Document parameters
+    \title{MagIC\_workshop\_example}
+    
+    
+    
+
+    % Pygments definitions
+    
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\expandafter\def\csname PY@tok@gd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gu\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@gt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\expandafter\def\csname PY@tok@gs\endcsname{\let\PY@bf=\textbf}
+\expandafter\def\csname PY@tok@gr\endcsname{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@cm\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@vg\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@m\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@go\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.53,0.53}{##1}}}
+\expandafter\def\csname PY@tok@ge\endcsname{\let\PY@it=\textit}
+\expandafter\def\csname PY@tok@vc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@il\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@cs\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.74,0.48,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gh\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@ni\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
+\expandafter\def\csname PY@tok@nl\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@no\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@na\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.49,0.56,0.16}{##1}}}
+\expandafter\def\csname PY@tok@nb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@ne\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.82,0.25,0.23}{##1}}}
+\expandafter\def\csname PY@tok@nf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@si\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@s2\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@vi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@nt\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nv\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@s1\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sx\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@bp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@c1\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@kc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@c\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@mf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@err\endcsname{\def\PY@bc##1{\setlength{\fboxsep}{0pt}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}
+\expandafter\def\csname PY@tok@kd\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@ss\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@sr\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@mo\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@kn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@mi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@gp\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@o\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@kr\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@s\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@kp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@w\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\expandafter\def\csname PY@tok@kt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\expandafter\def\csname PY@tok@ow\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@sb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@k\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@se\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sd\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % Exact colors from NB
+    \definecolor{incolor}{rgb}{0.0, 0.0, 0.5}
+    \definecolor{outcolor}{rgb}{0.545, 0.0, 0.0}
+
+
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=blue,
+      linkcolor=darkorange,
+      citecolor=darkgreen,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+    \begin{document}
+    
+    
+    \maketitle
+    
+    
+
+    
+
+    \section{Example notebook}
+
+
+    This simple example notebook accompanies a short talk given at the 2014
+MagIC science and database workshop. The PDF of the slides is availible
+here:
+https://github.com/Swanson-Hysell/PmagPy\_IPython/raw/master/2014\_MagIC\_workshop/Swanson-Hysell\_MagIC2014.pdf
+
+
+    \subsection{Import function libraries}
+
+
+    IPmag.py is a function library for paleomagnetic data analysis and
+plotting developed for interactive use within IPython notebooks. The
+IPmag.py library relies on the pmag.py and pmagplotlib.py libraries of
+the PmagPy project (https://github.com/ltauxe/PmagPy) and adds new
+functions and modifies stand alone PmagPy programs for use in the
+interactive IPython environment. The pmag.py library is included in the
+IPmag.py repository as a very slightly modified version from that
+availible in the main PmagPy repository. The version of pmag.py being
+used here from pmagpy-2.206.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}1}]:} \PY{k+kn}{import} \PY{n+nn}{pmag}\PY{o}{,} \PY{n+nn}{pmagplotlib}\PY{o}{,} \PY{n+nn}{IPmag}
+        \PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k+kn}{as} \PY{n+nn}{np}
+        \PY{k+kn}{import} \PY{n+nn}{pandas} \PY{k+kn}{as} \PY{n+nn}{pd}
+        \PY{k+kn}{import} \PY{n+nn}{matplotlib.pyplot} \PY{k+kn}{as} \PY{n+nn}{plt}
+        \PY{k+kn}{from} \PY{n+nn}{IPython.core.display} \PY{k+kn}{import} \PY{n}{Image} 
+        \PY{o}{\PYZpc{}}\PY{k}{matplotlib} \PY{n}{inline}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}2}]:} \PY{n}{Image}\PY{p}{(}\PY{n}{filename}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{2014\PYZus{}MagIC\PYZus{}workshop/MagIC2014.png}\PY{l+s}{\PYZsq{}}\PY{p}{)} 
+\end{Verbatim}
+\texttt{\color{outcolor}Out[{\color{outcolor}2}]:}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{MagIC_workshop_example_files/MagIC_workshop_example_5_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+
+    \subsection{Example developing Fisher distributed data, plotting the data and
+comparing two data sets using a test for a common mean.}
+
+
+    Let's start by generating a set of directions from a Fisher distribution
+using the \texttt{IPmag.ifishrot} function.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}3}]:} \PY{n}{data1} \PY{o}{=} \PY{n}{IPmag}\PY{o}{.}\PY{n}{ifishrot}\PY{p}{(}\PY{n}{k}\PY{o}{=}\PY{l+m+mi}{42}\PY{p}{,}\PY{n}{n}\PY{o}{=}\PY{l+m+mi}{40}\PY{p}{,}\PY{n}{Dec}\PY{o}{=}\PY{l+m+mi}{204}\PY{p}{,}\PY{n}{Inc}\PY{o}{=}\PY{o}{\PYZhy{}}\PY{l+m+mi}{42}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}4}]:} \PY{n}{data1}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}4}]:} [[218.11569556120406, -50.274554383096415, 1.0],
+         [208.42469985977803, -44.983564159695767, 1.0],
+         [230.88947292192859, -46.624745623253688, 1.0],
+         [202.18890087664008, -22.717319275764698, 1.0],
+         [216.82955908650555, -28.907758493266957, 1.0],
+         [196.85975068187085, -46.435678919773139, 1.0],
+         [213.48898715459782, -43.464854834824145, 1.0],
+         [220.88017633760342, -48.523977578214293, 1.0],
+         [204.66975050330208, -44.219106889261496, 1.0],
+         [212.07833966805737, -45.226257597348543, 1.0],
+         [218.52170309556112, -45.655245287636959, 1.0],
+         [171.10001720046739, -32.625265305237932, 1.0],
+         [209.62896427763317, -27.200382379310234, 1.0],
+         [202.02376663609701, -31.373611015918822, 1.0],
+         [219.858098969628, -26.181647562457623, 1.0],
+         [201.51084707027249, -46.029599137054497, 1.0],
+         [196.93792773272156, -32.375759325022891, 1.0],
+         [219.15260167019571, -46.979181620208472, 1.0],
+         [199.03833390387695, -36.189397551310819, 1.0],
+         [211.22798485822273, -33.793088122986404, 1.0],
+         [213.30212668033019, -29.480685522187063, 1.0],
+         [193.4351277787006, -37.781229447382039, 1.0],
+         [205.47753870083065, -53.551303539771652, 1.0],
+         [189.82561803175119, -45.872681086591527, 1.0],
+         [197.9108349577906, -24.471405779328361, 1.0],
+         [214.68041398680762, -37.105229923997953, 1.0],
+         [208.66798870032272, -22.849704879992224, 1.0],
+         [209.74777009800195, -39.414303337458669, 1.0],
+         [188.02618595628297, -43.09564330913679, 1.0],
+         [203.12121565256541, -29.344790964074413, 1.0],
+         [213.58458948006586, -45.960383273200165, 1.0],
+         [211.60375134783246, -51.953865045454421, 1.0],
+         [200.38259909486771, -32.842769713928099, 1.0],
+         [199.74223825029202, -32.53772194490282, 1.0],
+         [187.56945652997442, -45.430366188485181, 1.0],
+         [202.25418233704036, -49.545747549334799, 1.0],
+         [198.70069062957035, -37.795954796139377, 1.0],
+         [208.96878897950532, -26.498413076478503, 1.0],
+         [197.6424438647874, -45.158617064842765, 1.0],
+         [185.35850695695143, -47.496901204778986, 1.0]]
+\end{Verbatim}
+        
+    Let's use the \texttt{pmag.fisher\_mean} function to calculated the
+Fisher statistical parameters for the data.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}5}]:} \PY{n}{data1\PYZus{}mean} \PY{o}{=} \PY{n}{pmag}\PY{o}{.}\PY{n}{fisher\PYZus{}mean}\PY{p}{(}\PY{n}{data1}\PY{p}{)}
+        \PY{n}{data1\PYZus{}mean}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}5}]:} \{'alpha95': 3.5406501384077265,
+         'csd': 12.534764892280513,
+         'dec': 204.99558465507852,
+         'inc': -39.509178691305621,
+         'k': 41.757804112425852,
+         'n': 40,
+         'r': 39.066042843273102\}
+\end{Verbatim}
+        
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}6}]:} \PY{n}{pmag}\PY{o}{.}\PY{n}{fisher\PYZus{}mean}\PY{err}{?}\PY{err}{?}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}7}]:} \PY{n}{fignum} \PY{o}{=} \PY{l+m+mi}{1}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{num}\PY{o}{=}\PY{n}{fignum}\PY{p}{,}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{,}\PY{l+m+mi}{8}\PY{p}{)}\PY{p}{,}\PY{n}{dpi}\PY{o}{=}\PY{l+m+mi}{160}\PY{p}{)}
+        \PY{n}{IPmag}\PY{o}{.}\PY{n}{iplotNET}\PY{p}{(}\PY{n}{fignum}\PY{p}{)}
+        \PY{n}{IPmag}\PY{o}{.}\PY{n}{iplotDI}\PY{p}{(}\PY{n}{data1}\PY{p}{,}\PY{n}{color}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{g}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{n}{label}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{data}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{n}{legend}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{yes}\PY{l+s}{\PYZsq{}}\PY{p}{)}
+        \PY{n}{IPmag}\PY{o}{.}\PY{n}{iplotDImean}\PY{p}{(}\PY{n}{data1\PYZus{}mean}\PY{p}{[}\PY{l+s}{\PYZsq{}}\PY{l+s}{dec}\PY{l+s}{\PYZsq{}}\PY{p}{]}\PY{p}{,}\PY{n}{data1\PYZus{}mean}\PY{p}{[}\PY{l+s}{\PYZsq{}}\PY{l+s}{inc}\PY{l+s}{\PYZsq{}}\PY{p}{]}\PY{p}{,}\PY{n}{data1\PYZus{}mean}\PY{p}{[}\PY{l+s}{\PYZsq{}}\PY{l+s}{alpha95}\PY{l+s}{\PYZsq{}}\PY{p}{]}\PY{p}{,}
+                          \PY{n}{color}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{b}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{n}{marker}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{s}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{n}{label}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{mean of data}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{n}{legend}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{yes}\PY{l+s}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{MagIC_workshop_example_files/MagIC_workshop_example_13_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}8}]:} \PY{n}{data2} \PY{o}{=} \PY{n}{IPmag}\PY{o}{.}\PY{n}{ifishrot}\PY{p}{(}\PY{n}{k}\PY{o}{=}\PY{l+m+mi}{36}\PY{p}{,}\PY{n}{n}\PY{o}{=}\PY{l+m+mi}{140}\PY{p}{,}\PY{n}{Dec}\PY{o}{=}\PY{l+m+mi}{206}\PY{p}{,}\PY{n}{Inc}\PY{o}{=}\PY{o}{\PYZhy{}}\PY{l+m+mi}{41}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}9}]:} \PY{n}{data2\PYZus{}mean} \PY{o}{=} \PY{n}{pmag}\PY{o}{.}\PY{n}{fisher\PYZus{}mean}\PY{p}{(}\PY{n}{data2}\PY{p}{)}
+        \PY{n}{data2\PYZus{}mean}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}9}]:} \{'alpha95': 2.1017754545938985,
+         'csd': 14.069339483629621,
+         'dec': 206.29443911646595,
+         'inc': -40.835567769695842,
+         'k': 33.145350796410476,
+         'n': 140,
+         'r': 135.80635001108351\}
+\end{Verbatim}
+        
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}10}]:} \PY{n}{fignum} \PY{o}{=} \PY{l+m+mi}{1}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{num}\PY{o}{=}\PY{n}{fignum}\PY{p}{,}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{,}\PY{l+m+mi}{8}\PY{p}{)}\PY{p}{,}\PY{n}{dpi}\PY{o}{=}\PY{l+m+mi}{160}\PY{p}{)}
+         \PY{n}{IPmag}\PY{o}{.}\PY{n}{iplotNET}\PY{p}{(}\PY{n}{fignum}\PY{p}{)}
+         \PY{n}{IPmag}\PY{o}{.}\PY{n}{iplotDI}\PY{p}{(}\PY{n}{data2}\PY{p}{,}\PY{n}{color}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{r}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{n}{label}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{data}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{n}{legend}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{yes}\PY{l+s}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{IPmag}\PY{o}{.}\PY{n}{iplotDImean}\PY{p}{(}\PY{n}{data2\PYZus{}mean}\PY{p}{[}\PY{l+s}{\PYZsq{}}\PY{l+s}{dec}\PY{l+s}{\PYZsq{}}\PY{p}{]}\PY{p}{,}\PY{n}{data2\PYZus{}mean}\PY{p}{[}\PY{l+s}{\PYZsq{}}\PY{l+s}{inc}\PY{l+s}{\PYZsq{}}\PY{p}{]}\PY{p}{,}\PY{n}{data2\PYZus{}mean}\PY{p}{[}\PY{l+s}{\PYZsq{}}\PY{l+s}{alpha95}\PY{l+s}{\PYZsq{}}\PY{p}{]}\PY{p}{,}
+                           \PY{n}{color}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{k}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{n}{marker}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{s}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{n}{label}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{mean of data}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{n}{legend}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{yes}\PY{l+s}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{MagIC_workshop_example_files/MagIC_workshop_example_16_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}11}]:} \PY{n}{fignum} \PY{o}{=} \PY{l+m+mi}{1}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{num}\PY{o}{=}\PY{n}{fignum}\PY{p}{,}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{,}\PY{l+m+mi}{8}\PY{p}{)}\PY{p}{,}\PY{n}{dpi}\PY{o}{=}\PY{l+m+mi}{160}\PY{p}{)}
+         \PY{n}{IPmag}\PY{o}{.}\PY{n}{iplotNET}\PY{p}{(}\PY{n}{fignum}\PY{p}{)}
+         \PY{n}{IPmag}\PY{o}{.}\PY{n}{iplotDImean}\PY{p}{(}\PY{n}{data1\PYZus{}mean}\PY{p}{[}\PY{l+s}{\PYZsq{}}\PY{l+s}{dec}\PY{l+s}{\PYZsq{}}\PY{p}{]}\PY{p}{,}\PY{n}{data1\PYZus{}mean}\PY{p}{[}\PY{l+s}{\PYZsq{}}\PY{l+s}{inc}\PY{l+s}{\PYZsq{}}\PY{p}{]}\PY{p}{,}\PY{n}{data1\PYZus{}mean}\PY{p}{[}\PY{l+s}{\PYZsq{}}\PY{l+s}{alpha95}\PY{l+s}{\PYZsq{}}\PY{p}{]}\PY{p}{,}
+                           \PY{n}{color}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{b}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{n}{marker}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{s}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{n}{label}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{mean of data}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{n}{legend}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{yes}\PY{l+s}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{IPmag}\PY{o}{.}\PY{n}{iplotDImean}\PY{p}{(}\PY{n}{data2\PYZus{}mean}\PY{p}{[}\PY{l+s}{\PYZsq{}}\PY{l+s}{dec}\PY{l+s}{\PYZsq{}}\PY{p}{]}\PY{p}{,}\PY{n}{data2\PYZus{}mean}\PY{p}{[}\PY{l+s}{\PYZsq{}}\PY{l+s}{inc}\PY{l+s}{\PYZsq{}}\PY{p}{]}\PY{p}{,}\PY{n}{data2\PYZus{}mean}\PY{p}{[}\PY{l+s}{\PYZsq{}}\PY{l+s}{alpha95}\PY{l+s}{\PYZsq{}}\PY{p}{]}\PY{p}{,}
+                           \PY{n}{color}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{k}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{n}{marker}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{s}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{n}{label}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{mean of data}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{n}{legend}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{yes}\PY{l+s}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{MagIC_workshop_example_files/MagIC_workshop_example_17_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}12}]:} \PY{n}{IPmag}\PY{o}{.}\PY{n}{iWatsonV}\PY{p}{(}\PY{n}{data1}\PY{p}{,}\PY{n}{data2}\PY{p}{,}\PY{n}{NumSims}\PY{o}{=}\PY{l+m+mi}{500}\PY{p}{,}\PY{n}{plot}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{yes}\PY{l+s}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Results of Watson V test: 
+
+Watson's V:           1.0
+Critical value of V:  5.6
+"Pass": Since V is less than Vcrit, the null hypothesis
+that the two populations are drawn from distributions
+that share a common mean direction can not be rejected.
+
+M\&M1990 classification:
+
+Angle between data set means: 1.7
+Critical angle for M\&M1990:   3.9
+The McFadden and McElhinny (1990) classification for
+this test is: 'A'
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{MagIC_workshop_example_files/MagIC_workshop_example_18_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}13}]:} \PY{n}{IPmag}\PY{o}{.}\PY{n}{iWatsonV}\PY{err}{?}
+\end{Verbatim}
+
+
+    \subsection{Reading data from MagIC format results files (\texttt{pmag.magic\_read})}
+
+
+    PmagPy has built in functions to deal with data in MagIC database format
+files. One such function is the \texttt{pmag.magic\_read} function. In
+the code block below, this function is used to read in data from a
+\texttt{pmag\_results.txt} file. The \texttt{pmag.magic\_read} function
+creates two outputs:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\itemsep1pt\parskip0pt\parsep0pt
+\item
+  the data from the Magic template file in a list of dictionaries
+\item
+  the type of data in the file (e.g. `pmag\_results')
+\end{enumerate}
+
+    Let's look at data from:
+
+Tauxe, L., Luskin, C., Selkin, P., Gans, P. and Calvert, A. (2004).
+Paleomagnetic results from the Snake River Plain: Contribution to the
+time‐averaged field global database. Geochemistry Geophysics Geosystems
+5: doi: 10.1029/2003GC000661.
+http://onlinelibrary.wiley.com/doi/10.1029/2003GC000661/
+
+Downloaded from the MagIC database:
+
+http://earthref.org/MAGIC/9207/
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}14}]:} \PY{n}{data}\PY{p}{,}\PY{n}{file\PYZus{}type}\PY{o}{=}\PY{n}{pmag}\PY{o}{.}\PY{n}{magic\PYZus{}read}\PY{p}{(}\PY{l+s}{\PYZsq{}}\PY{l+s}{Example\PYZus{}Data/pmag\PYZus{}results.txt}\PY{l+s}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{results} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{data}\PY{p}{)}
+         \PY{n}{results}\PY{o}{.}\PY{n}{average\PYZus{}dec} \PY{o}{=} \PY{n}{results}\PY{o}{.}\PY{n}{average\PYZus{}dec}\PY{o}{.}\PY{n}{astype}\PY{p}{(}\PY{n+nb}{float}\PY{p}{)}
+         \PY{n}{results}\PY{o}{.}\PY{n}{average\PYZus{}inc} \PY{o}{=} \PY{n}{results}\PY{o}{.}\PY{n}{average\PYZus{}inc}\PY{o}{.}\PY{n}{astype}\PY{p}{(}\PY{n+nb}{float}\PY{p}{)}
+         \PY{n}{results}\PY{o}{.}\PY{n}{average\PYZus{}alpha95} \PY{o}{=} \PY{n}{results}\PY{o}{.}\PY{n}{average\PYZus{}alpha95}\PY{o}{.}\PY{n}{astype}\PY{p}{(}\PY{n+nb}{float}\PY{p}{)}
+         \PY{n}{results}
+\end{Verbatim}
+
+            \begin{Verbatim}[commandchars=\\\{\}]
+{\color{outcolor}Out[{\color{outcolor}14}]:}    antipodal average\_age average\_age\_sigma average\_age\_unit  average\_alpha95  \textbackslash{}
+         0                    3.4              0.03               Ma              2.3   
+         1                      1                 1               Ma              3.0   
+         2                      2              0.05               Ma              4.3   
+         3                  0.095              0.05               Ma              3.0   
+         4                  0.395              0.01               Ma              3.0   
+         5                  0.373              0.06               Ma              5.1   
+         6                  0.404              0.07               Ma              4.0   
+         7                   1.76             0.016               Ma              2.6   
+         8                   2.26              0.05               Ma              3.3   
+         9                   1.69              0.02               Ma              2.5   
+         10                 0.591             0.015               Ma              4.2   
+         11                 0.291             0.016               Ma              2.6   
+         12                  1.73              0.01               Ma              4.9   
+         13                  2.94             0.025               Ma              3.2   
+         14                     1                 1               Ma              1.6   
+         15                  5.75             0.125               Ma              2.7   
+         16                 0.184             0.014               Ma              1.3   
+         17                 0.191             0.008               Ma              2.4   
+         18                 0.124             0.039               Ma              5.7   
+         19                     1                 1               Ma              5.2   
+         20                     1                 1               Ma              4.2   
+         21                1.5055            1.6253               Ma              7.7   
+         22                1.0757           0.91686               Ma              8.7   
+         23     177.2      1.3418            1.3874               Ma              5.4   
+         
+             average\_dec  average\_inc average\_int average\_int\_n average\_int\_sigma  \textbackslash{}
+         0         330.1         64.9    3.61e-05             5          1.32e-05   
+         1         151.8        -57.5                                               
+         2          16.5         54.6                                               
+         3          14.6         77.9                                               
+         4         346.3         73.8                                               
+         5          15.3         44.8                                               
+         6         347.4         65.6                                               
+         7         172.5        -66.9                                               
+         8           6.3         29.7                                               
+         9          14.5         45.5                                               
+         10        163.3        -62.2                                               
+         11          2.9         61.9                                               
+         12        358.6         62.5                                               
+         13        197.4        -51.2                                               
+         14          9.5         62.8                                               
+         15          7.5         66.7    4.88e-05             2           1.7e-06   
+         16         23.2         54.0                                               
+         17        205.8        -49.4    7.85e-05             3           4.7e-06   
+         18        197.6        -65.5                                               
+         19        188.1        -47.2    5.02e-05             2           2.7e-06   
+         20        192.9        -60.7                                               
+         21          6.1         59.6                                               
+         22        185.1        -58.8                                               
+         23          5.7         59.3                                               
+         
+            average\_k average\_lat average\_lat\_sigma average\_lon average\_lon\_sigma  \textbackslash{}
+         0      572.7     42.6026                       245.602                     
+         1      408.8     42.6035                       245.599                     
+         2      313.1      42.601                       245.596                     
+         3      407.3     42.7366                       245.165                     
+         4      428.4     42.8418                       245.112                     
+         5      227.8     42.8657                       245.127                     
+         6      228.8     42.9203                       244.923                     
+         7      892.1     42.4996                       245.851                     
+         8      333.8        42.5                        245.85                     
+         9      970.1     42.5287                       245.979                     
+         10     325.7     42.4556                       245.636                     
+         11     872.4     42.4892                         245.6                     
+         12     153.9     42.4619                       245.615                     
+         13     296.1     42.6529                       246.988                     
+         14    1253.3      43.305                       247.732                     
+         15     488.7     43.3682                       247.345                     
+         16    1820.7     43.4213                       247.256                     
+         17     642.1     43.8859                       247.199                     
+         18     138.9     43.8427                       247.376                     
+         19     168.2     43.5749                       248.266                     
+         20       335     44.1566                       248.574                     
+         21      30.2     42.8154             0.346    245.9077            0.9269   
+         22      41.9      43.225            0.7166      246.95            1.1686   
+         23      35.4     42.9714            0.5414    246.3048            1.1236   
+         
+            average\_n average\_nn average\_r conglomerate\_test contact\_test      
+         0          8          8    7.9878                ND           ND \ldots  
+         1          7          7    6.9853                ND           ND \ldots  
+         2          5          5    4.9872                ND           ND \ldots  
+         3          7          7    6.9865                ND           ND \ldots  
+         4          7          7    6.9883                ND           ND \ldots  
+         5          5          5    4.9824                ND           ND \ldots  
+         6          7          7    6.9738                ND           ND \ldots  
+         7          5          5    4.9955                ND           ND \ldots  
+         8          7          7    6.9835                ND           ND \ldots  
+         9          5          5    4.9964                ND           ND \ldots  
+         10         5          5    4.9877                ND           ND \ldots  
+         11         5          5    4.9954                ND           ND \ldots  
+         12         7          7    6.9643                ND           ND \ldots  
+         13         8          8    7.9764                ND           ND \ldots  
+         14         8          8    7.9944                ND           ND \ldots  
+         15         7          7    6.9877                ND           ND \ldots  
+         16         8          8    7.9962                ND           ND \ldots  
+         17         7          7    6.9914                ND           ND \ldots  
+         18         6          6     5.964                ND           ND \ldots  
+         19         6          6    5.9703                ND           ND \ldots  
+         20         5          5    4.9881                ND           ND \ldots  
+         21        13               12.602                ND           ND \ldots  
+         22         8                7.833                ND           ND \ldots  
+         23        21              20.4344                ND           ND \ldots  
+         
+         [24 rows x 42 columns]
+\end{Verbatim}
+        
+    Now that we have imported the data, we can do other things with it such
+as plot it using \texttt{IPmag.iplotDImean}.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}15}]:} \PY{n}{fignum} \PY{o}{=} \PY{l+m+mi}{1}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{num}\PY{o}{=}\PY{n}{fignum}\PY{p}{,}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{6}\PY{p}{,}\PY{l+m+mi}{6}\PY{p}{)}\PY{p}{,}\PY{n}{dpi}\PY{o}{=}\PY{l+m+mi}{160}\PY{p}{)}
+         \PY{n}{IPmag}\PY{o}{.}\PY{n}{iplotNET}\PY{p}{(}\PY{n}{fignum}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s}{\PYZsq{}}\PY{l+s}{Snake River Plain site mean equal area plot}\PY{l+s}{\PYZsq{}}\PY{p}{)}
+         \PY{k}{for} \PY{n}{n} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{n+nb}{len}\PY{p}{(}\PY{n}{results}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+             \PY{n}{IPmag}\PY{o}{.}\PY{n}{iplotDImean}\PY{p}{(}\PY{n}{results}\PY{p}{[}\PY{l+s}{\PYZsq{}}\PY{l+s}{average\PYZus{}dec}\PY{l+s}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{n}{n}\PY{p}{]}\PY{p}{,}\PY{n}{results}\PY{p}{[}\PY{l+s}{\PYZsq{}}\PY{l+s}{average\PYZus{}inc}\PY{l+s}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{n}{n}\PY{p}{]}\PY{p}{,}\PY{n}{results}\PY{p}{[}\PY{l+s}{\PYZsq{}}\PY{l+s}{average\PYZus{}alpha95}\PY{l+s}{\PYZsq{}}\PY{p}{]}\PY{p}{[}\PY{n}{n}\PY{p}{]}\PY{p}{,}
+                           \PY{n}{color}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{b}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{n}{marker}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{s}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{n}{label}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{mean of data}\PY{l+s}{\PYZsq{}}\PY{p}{,}\PY{n}{legend}\PY{o}{=}\PY{l+s}{\PYZsq{}}\PY{l+s}{no}\PY{l+s}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{MagIC_workshop_example_files/MagIC_workshop_example_25_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    This notebook is availible in this Github repository:
+https://github.com/Swanson-Hysell/PmagPy\_IPython
+
+The notebook can be viewed as raw html here:
+http://nbviewer.ipython.org/github/Swanson-Hysell/PmagPy\_IPython/blob/master/IPmag\_examples.ipynb
+
+This command can be used to to convert this notebook into a PDF
+document:
+
+\texttt{nbconvert -{}-to latex MagIC\_workshop\_example.ipynb -{}-post PDF}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}}]:} 
+\end{Verbatim}
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+    \end{document}
