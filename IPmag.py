@@ -493,7 +493,7 @@ def vgpcalc(dataframe,tilt_correction='yes'):
     dataframe['inc_is'] : the insitu inclination (used when tilt-correction='no')
     dataframe['dec_is'] : the insitu declination (used when tilt-correction='no')
     """
-    if tilt_correction='yes':
+    if tilt_correction=='yes':
         #calculate the paleolatitude/colatitude
         dataframe['paleolatitude']=np.degrees(np.arctan(0.5*np.tan(np.radians(dataframe['inc_tc']))))
         dataframe['colatitude']=90-dataframe['paleolatitude']
@@ -518,7 +518,7 @@ def vgpcalc(dataframe,tilt_correction='yes'):
         #but aren't of further use and are deleted
         del dataframe['colatitude']
         del dataframe['beta']
-    if tilt_correction='no':
+    if tilt_correction=='no':
         #calculate the paleolatitude/colatitude
         dataframe['paleolatitude']=np.degrees(np.arctan(0.5*np.tan(np.radians(dataframe['inc_is']))))
         dataframe['colatitude']=90-dataframe['paleolatitude']
