@@ -22,6 +22,35 @@ def ifishrot(k=20,n=100,Dec=0,Inc=90):
         directions.append([drot,irot,1.])
     return directions
 
+def tk03(n=100,dec=0,lat=0,rev='no',G2=0,G3=0):
+    """
+    generates set of vectors drawn from the TK03.gad model of 
+    secular variation at given latitude and rotated about vertical 
+    axis by given declination 
+
+    Parameters
+    ----------
+    n number of vectors to determine (default is 100)
+    dec mean declination of data set (default is 0)
+    lat latitude at which secular variation is simulated (default is 0)
+    rev if reversals are to be included this should be 'yes' (default is 'no')
+    G2 specify average g_2^0 fraction (default is 0)
+    G3 specify average g_3^0 fraction (default is 0)
+    """
+    tk_03_output=[]
+    for k in range(n): 
+        gh=pmag.mktk03(8,k,G2,G3) # terms and random seed
+        long=random.randint(0,360) # get a random longitude, between 0 and 359
+        vec= pmag.getvec(gh,lat,long)  # send field model and lat to getvec
+        vec[0]+=dec
+        if vec[0]>=360.:
+            vec[0]-=360.
+        if k%2==0 and rev=='yes':
+           vec[0]+=180.
+           vec[1]=-vec[1]
+        tk_03_output.append([vec[0],vec[1],vec[2]])    
+    return tk_03_output
+
 def iflip(D): #function simplified from PmagPy pmag.flip function
     """
     This function returns the antipode (flips) of the unit vectors in D (dec,inc,length).
