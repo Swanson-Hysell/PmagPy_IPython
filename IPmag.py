@@ -1,6 +1,7 @@
 import pmag, pmagplotlib
 import pylab
 import numpy as np
+import random
 import matplotlib.pyplot as plt
 
 def ifishrot(k=20,n=100,Dec=0,Inc=90):
