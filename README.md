@@ -6,8 +6,9 @@ ipmag.py is a function module for paleomagnetic data analysis and plotting devel
 Example IPython notebooks
 ==============
 
-Within this repository there is example IPython notebooks using ipmag.py, pmag.py and pmagplotlib.py for the plotting and analysis of paleomagnetic data. The notebook can be run by cloning the repository and running it locally using IPython. Alternatively, the notebooks can be viewed as a static html websites at these links:
+Within this repository there are example IPython notebooks using ipmag.py, pmag.py and pmagplotlib.py for the plotting and analysis of paleomagnetic data. These notebooks can be run by cloning the repository and running them locally using IPython. Alternatively, the notebooks can be viewed as a static html websites at these links:
 http://nbviewer.ipython.org/github/Swanson-Hysell/PmagPy_IPython/blob/master/IPmag_examples.ipynb
+http://nbviewer.ipython.org/github/Swanson-Hysell/PmagPy_IPython/blob/master/bootstrap_fold_test.ipynb
 
 Example IPython notebook for MagIC workshop
 ==============
