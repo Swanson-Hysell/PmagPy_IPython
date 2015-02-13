@@ -1,4 +1,4 @@
-PmagPy_IPython
+Using PmagPy within IPython notebooks
 ==============
 
 ipmag.py is a function module for paleomagnetic data analysis and plotting developed for use within IPython/Jupyter notebooks. The ipmag.py module is part of the PmagPy project (https://github.com/ltauxe/PmagPy) and relies on functions in the pmag.py and pmagplotlib.py modules. PmagPy contains many programs that can be executed at the command line. Some of the functionality availible in these programs is now availible in the the interactive IPython environment through use of ipmag.py in concert with pmag.py and pmagplotlib.py. For more on pmagpy visit https://github.com/ltauxe/PmagPy and the associated Cookbook http://earthref.org/PmagPy/cookbook
